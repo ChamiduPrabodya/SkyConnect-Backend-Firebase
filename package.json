@@ -1,0 +1,19 @@
+{
+  "name": "skyconnect-backend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "seed:preview": "node scripts/seed.mjs",
+    "seed": "node scripts/seed.mjs --apply",
+    "seed:references:preview": "node scripts/seed-references.mjs",
+    "seed:references": "node scripts/seed-references.mjs --apply",
+    "seed:no-images:preview": "node scripts/seed-without-images.mjs",
+    "seed:no-images": "node scripts/seed-without-images.mjs --apply",
+    "admin": "node scripts/admin.mjs",
+    "notifications:worker": "node --env-file-if-exists=.env.notifications.local scripts/notifications-worker.mjs --firebase-cli",
+    "test": "node --test tests/*.test.mjs",
+    "test:rules": "firebase emulators:exec --only firestore --project demo-skyconnect \"node --test tests/rules.test.mjs\""
+  },
+  "dependencies": { "firebase-admin": "^13.0.0" },
+  "devDependencies": { "@firebase/rules-unit-testing": "^5.0.0", "firebase": "^12.4.0", "firebase-tools": "^15.0.0" }
+}

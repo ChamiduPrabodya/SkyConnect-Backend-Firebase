@@ -1,0 +1,91 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function admin() { return signedIn() && request.auth.token.get('admin', false) == true; }
+    function owner(uid) { return signedIn() && request.auth.uid == uid; }
+    function ownPartner(data) { return signedIn() && data.get('partnerId', '') == request.auth.uid; }
+    function ownAirline(data) { return signedIn() && data.get('airlineId', '') == request.auth.uid; }
+    function partnerType(type) { return signedIn() && get(/databases/$(database)/documents/partners/$(request.auth.uid)).data.type == type; }
+    function validNotificationTime() {
+      return !request.resource.data.keys().hasAny(['notificationUpdatedAt']) || request.resource.data.notificationUpdatedAt == request.time || (resource != null && request.resource.data.notificationUpdatedAt == resource.data.get('notificationUpdatedAt', null));
+    }
+
+    match /users/{uid} {
+      allow read: if owner(uid) || admin();
+      allow create: if owner(uid) && request.resource.data.uid == uid && request.resource.data.role == 'traveler';
+      allow update: if admin() || (owner(uid) && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name','fullName','phone','country','updatedAt']));
+      allow delete: if admin();
+      match /settings/{id} { allow read, write: if owner(uid) || admin(); }
+      match /savedPlans/{id} { allow read, write: if owner(uid) || admin(); }
+      match /devices/{id} {
+        allow read, delete: if owner(uid);
+        allow create, update: if owner(uid)
+          && request.resource.data.keys().hasOnly(['app','provider','platform','token','enabled','updatedAt'])
+          && request.resource.data.app in ['traveler','partner','admin']
+          && request.resource.data.provider == 'fcm'
+          && request.resource.data.platform in ['web','android','ios']
+          && request.resource.data.token is string && request.resource.data.token.size() > 20 && request.resource.data.token.size() < 8192
+          && request.resource.data.enabled is bool && request.resource.data.updatedAt == request.time;
+      }
+      match /notifications/{id} {
+        allow read, delete: if owner(uid);
+        allow update: if owner(uid) && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['read','readAt']) && request.resource.data.read is bool && (request.resource.data.readAt == null || request.resource.data.readAt is string);
+        // Only the trusted worker writes notification content and delivery state.
+      }
+      match /likes/{id} {
+        allow read, delete: if owner(uid) || admin();
+        allow create, update: if owner(uid) && request.resource.data.keys().hasOnly(['itemId','type','name','createdAt']) && request.resource.data.itemId is string;
+      }
+    }
+    match /{path=**}/likes/{id} { allow read: if admin(); }
+    match /{path=**}/savedPlans/{id} { allow read: if admin(); }
+
+    match /partners/{id} {
+      allow read: if admin() || owner(id) || resource.data.status == 'Approved';
+      allow create: if owner(id) && validNotificationTime() && request.resource.data.uid == id && request.resource.data.id == id && request.resource.data.status == 'Pending' && request.resource.data.verified == false && request.resource.data.type in ['Tourism','Airline'];
+      allow update: if admin() || (owner(id) && validNotificationTime() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name','phone','category','city','location','country','headquarters','contactName','description','website','contact','iata','icao','aoc','bsp','fleet','founded','sltdaLicense','brNumber','businessType','preferences','updatedAt','notificationUpdatedAt']));
+      allow delete: if admin();
+    }
+    match /offers/{id} {
+      allow read: if admin() || ownPartner(resource.data) || resource.data.status == 'Published';
+      allow create: if admin() || (validNotificationTime() && ownPartner(request.resource.data) && partnerType('Tourism') && request.resource.data.status == 'Pending' && request.resource.data.verified == false);
+      allow update: if admin() || (validNotificationTime() && ownPartner(resource.data) && request.resource.data.partnerId == resource.data.partnerId && request.resource.data.status == 'Pending' && request.resource.data.verified == false);
+      allow delete: if admin() || ownPartner(resource.data);
+    }
+    match /routes/{id} {
+      allow read: if admin() || ownAirline(resource.data) || resource.data.status == 'approved';
+      allow create: if admin() || (validNotificationTime() && ownAirline(request.resource.data) && partnerType('Airline') && request.resource.data.status == 'pending');
+      allow update: if admin() || (validNotificationTime() && ownAirline(resource.data) && request.resource.data.airlineId == resource.data.airlineId && (request.resource.data.status == 'pending' || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status','updatedAt','notificationUpdatedAt']) && resource.data.status == 'approved' && request.resource.data.status == 'paused')));
+      allow delete: if admin() || ownAirline(resource.data);
+    }
+    match /destinations/{id} { allow read: if admin() || resource.data.status == 'Published'; allow write: if admin(); }
+    match /packages/{id} { allow read: if admin() || resource.data.status == 'Published'; allow write: if admin(); }
+    match /flights/{id} { allow read: if admin() || resource.data.status == 'Published'; allow write: if admin(); }
+    match /referenceData/{id} { allow read: if true; allow write: if admin(); }
+    match /legacySamples/{id} { allow read, write: if admin(); }
+
+    function validBooking(data) {
+      let flight = data.kind == 'flight';
+      let bundle = data.kind == 'package';
+      let itemId = flight ? data.routeId : data.offerId;
+      let item = flight ? (exists(/databases/$(database)/documents/routes/$(itemId)) ? get(/databases/$(database)/documents/routes/$(itemId)).data : get(/databases/$(database)/documents/flights/$(itemId)).data) : (bundle ? get(/databases/$(database)/documents/packages/$(itemId)).data : get(/databases/$(database)/documents/offers/$(itemId)).data);
+      return data.kind in ['flight','stay','tour','package'] && data.userId == request.auth.uid && data.status == 'Pending' && (flight ? !data.keys().hasAny(['partnerId']) : !data.keys().hasAny(['airlineId'])) && (item.status == 'Published' || (flight && item.status == 'approved')) && (flight ? data.airlineId == item.airlineId : data.partnerId == item.partnerId);
+    }
+    match /bookings/{id} {
+      allow read: if admin() || (signedIn() && (resource.data.userId == request.auth.uid || ownPartner(resource.data) || ownAirline(resource.data)));
+      allow create: if signedIn() && validNotificationTime() && validBooking(request.resource.data);
+      allow update: if admin() || (signedIn() && validNotificationTime() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status','updatedAt','notificationUpdatedAt']) && ((resource.data.userId == request.auth.uid && request.resource.data.status == 'Cancelled') || ((ownPartner(resource.data) || ownAirline(resource.data)) && resource.data.status != 'Cancelled' && request.resource.data.status in ['Confirmed','Rejected','Cancelled','Checked In','Checked-In','Completed'])));
+      allow delete: if admin();
+    }
+    match /notificationRequests/{id} {
+      allow read: if admin();
+      allow create: if admin() && request.resource.data.keys().hasOnly(['uid','app','title','body','createdBy','createdAt','state'])
+        && request.resource.data.createdBy == request.auth.uid && request.resource.data.createdAt == request.time
+        && request.resource.data.state == 'pending' && request.resource.data.app in ['traveler','partner','admin']
+        && request.resource.data.uid is string && request.resource.data.uid.size() > 0 && request.resource.data.uid.size() <= 128 && request.resource.data.uid.matches('^[^/]+$')
+        && request.resource.data.title is string && request.resource.data.title.size() > 0 && request.resource.data.title.size() <= 100
+        && request.resource.data.body is string && request.resource.data.body.size() > 0 && request.resource.data.body.size() <= 500;
+    }
+  }
+}

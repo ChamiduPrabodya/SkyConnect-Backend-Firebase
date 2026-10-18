@@ -1,0 +1,6 @@
+node_modules/
+.npm-cache/
+*-debug.log
+*-output.log
+.env
+*.local

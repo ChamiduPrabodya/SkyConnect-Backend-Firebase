@@ -1,0 +1,878 @@
+{
+  "c24e895f9d8147c74ecfe142.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/sigiriya/rock.jpg",
+    "contentType": "image/jpeg"
+  },
+  "9ddb2b61b10115a6ebfcaf1a.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/sigiriya/village.jpg",
+    "contentType": "image/jpeg"
+  },
+  "72f0bc56d9b9badfbcc4a320.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/sigiriya/sigiriya-museum.jpg",
+    "contentType": "image/jpeg"
+  },
+  "aaa84945cb11bd3dadd7c10f.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/sigiriya/sigiriya-water-gardens.jpg",
+    "contentType": "image/jpeg"
+  },
+  "47ae91acb47090f11ffd66a0.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/sigiriya/sigiriya-elephant-safari.jpg",
+    "contentType": "image/jpeg"
+  },
+  "bd652eafeacfb15801da3530.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/sigiriya/sigiriya-pidurangala.jpg",
+    "contentType": "image/jpeg"
+  },
+  "1dae7b1ddd7da350042381e6.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/ella/bridge.jpg",
+    "contentType": "image/jpeg"
+  },
+  "40e65641c8ff4fc182ffdc41.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/ella/peak.jpg",
+    "contentType": "image/jpeg"
+  },
+  "5fb02d3f44c994f13c399b40.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/ella/ella-ravana-falls.jpg",
+    "contentType": "image/jpeg"
+  },
+  "45b52d2d32942f3e6067616e.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/ella/ella-rock.jpg",
+    "contentType": "image/jpeg"
+  },
+  "0afac623c01f0b8eef681fd2.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/ella/ella-spice-garden.jpg",
+    "contentType": "image/jpeg"
+  },
+  "d18b72c9626ab4d522c4be4c.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/ella/ella-ravana-cave.jpg",
+    "contentType": "image/jpeg"
+  },
+  "1bb55b435731479f93ac26ca.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/ella/ella-scenic-train.jpg",
+    "contentType": "image/jpeg"
+  },
+  "265a7dc78b30520a5cebe200.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/mirissa/coconut.jpg",
+    "contentType": "image/jpeg"
+  },
+  "3ea64496dba38913fd6683c2.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/mirissa/mirissa-beach.jpg",
+    "contentType": "image/jpeg"
+  },
+  "faab3883380db254d03d613a.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/mirissa/mirissa-whale-watching.jpg",
+    "contentType": "image/jpeg"
+  },
+  "f97102478d69a970f518f978.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/mirissa/mirissa-parrot-rock.jpg",
+    "contentType": "image/jpeg"
+  },
+  "d4ae4408d3c13363fd089b78.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/mirissa/mirissa-sunset.jpg",
+    "contentType": "image/jpeg"
+  },
+  "a5c7395191a5299f6b7413d6.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/mirissa/mirissa-snorkeling.jpg",
+    "contentType": "image/jpeg"
+  },
+  "bfcbcf585ef7cd7af189b07e.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/mirissa/mirissa-secret-beach.jpg",
+    "contentType": "image/jpeg"
+  },
+  "00a47f990bf0cc429a006ae2.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/kandy/temple.jpg",
+    "contentType": "image/jpeg"
+  },
+  "2e4f56be8488cfad33eeb17a.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/kandy/gardens.jpg",
+    "contentType": "image/jpeg"
+  },
+  "31d66084d4de46016909912f.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/kandy/kandy-lake.jpg",
+    "contentType": "image/jpeg"
+  },
+  "37343e2e4f2104157637e007.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/kandy/kandy-viewpoint.jpg",
+    "contentType": "image/jpeg"
+  },
+  "9e33f36a908f1ce718b25206.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/kandy/kandy-cultural-dance.jpg",
+    "contentType": "image/jpeg"
+  },
+  "80a4f0e943ba3ad1d16e647f.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/kandy/kandy-tea-museum.jpg",
+    "contentType": "image/jpeg"
+  },
+  "37e0a803b54488a973f21b9e.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/kandy/kandy-sanctuary.jpg",
+    "contentType": "image/jpeg"
+  },
+  "1c0e7a48132b58f22ee2765e.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/kandy/kandy-pinnawala.jpg",
+    "contentType": "image/jpeg"
+  },
+  "cbec1cb58668f268fd19ee2b.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/kandy/kandy-spice-garden.jpg",
+    "contentType": "image/jpeg"
+  },
+  "90f0a37e81e6d8ad54606ed3.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/galle/fort.jpg",
+    "contentType": "image/jpeg"
+  },
+  "a63d33e60cabf59df0bcb04c.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/galle/cooking.jpg",
+    "contentType": "image/jpeg"
+  },
+  "f91be033297f5789e79126fd.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/galle/galle-lighthouse.jpg",
+    "contentType": "image/jpeg"
+  },
+  "9e7ae0d6b88ef0b6ac003382.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/galle/galle-maritime-museum.jpg",
+    "contentType": "image/jpeg"
+  },
+  "832a726b51d23e079d605e5c.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/galle/galle-unawatuna.jpg",
+    "contentType": "image/jpeg"
+  },
+  "3ff47c9d65c290ab1e205776.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/galle/galle-peace-pagoda.jpg",
+    "contentType": "image/jpeg"
+  },
+  "fb03626da2f9ee379f152f1a.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/galle/galle-dutch-reformed-church.jpg",
+    "contentType": "image/jpeg"
+  },
+  "9fbd8ae0c39045efbdc551db.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/galle/galle-jungle-beach-snorkeling.jpg",
+    "contentType": "image/jpeg"
+  },
+  "c044954f7e07e77176e55f88.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/nuwara/tea.jpg",
+    "contentType": "image/jpeg"
+  },
+  "7b9f98f60e7996534c999996.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/nuwara/plains.jpg",
+    "contentType": "image/jpeg"
+  },
+  "05c6b66dfa1ae2dd2413acb8.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/nuwara/nuwara-gregory-lake.jpg",
+    "contentType": "image/jpeg"
+  },
+  "2027ab6bf970614bf0ee327b.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/nuwara/nuwara-victoria-park.jpg",
+    "contentType": "image/jpeg"
+  },
+  "f28699a51fb0578e2901a8ea.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/nuwara/nuwara-pedro-tea.jpg",
+    "contentType": "image/jpeg"
+  },
+  "6e30b68c8b21ce3de29b1cbf.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/nuwara/nuwara-lovers-leap.jpg",
+    "contentType": "image/jpeg"
+  },
+  "2c4ec49ab695700c6209244c.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/nuwara/nuwara-adams-peak.jpg",
+    "contentType": "image/jpeg"
+  },
+  "1d946133d92a849112866695.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/nuwara/nuwara-hakgala-garden.jpg",
+    "contentType": "image/jpeg"
+  },
+  "e5c53968c295a98db2c063e7.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/nuwara/nuwara-seetha-amman.jpg",
+    "contentType": "image/jpeg"
+  },
+  "be80af76c10cac5d9a3c8e07.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/nuwara/nuwara-strawberry-farm.jpg",
+    "contentType": "image/jpeg"
+  },
+  "f281849955011192121751ae.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/kitulgala/kitulgala-rafting.jpg",
+    "contentType": "image/jpeg"
+  },
+  "d2ccb75fb3f2b312fe93dada.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/kitulgala/kitulgala-trek.jpg",
+    "contentType": "image/jpeg"
+  },
+  "2fa808edc47108472580ec59.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/kitulgala/kitulgala-kelani-river.jpg",
+    "contentType": "image/jpeg"
+  },
+  "fd8aa4174cc0fb1ec10816da.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/yala/safari.jpg",
+    "contentType": "image/jpeg"
+  },
+  "b3a7ce97f21b12c0512c7581.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/yala/birds.jpg",
+    "contentType": "image/jpeg"
+  },
+  "b4c60f34fac54543382278f3.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/yala/yala-leopard-watch.jpg",
+    "contentType": "image/jpeg"
+  },
+  "9dd5aef0c8fdcf080559ddfc.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/yala/yala-nature-walk.jpg",
+    "contentType": "image/jpeg"
+  },
+  "1c490fd828c23c9dc2ecc557.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/yala/yala-kirinda-temple.jpg",
+    "contentType": "image/jpeg"
+  },
+  "6f33c255735a2ed1f53c6eb2.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/yala/yala-kirinda-beach.jpg",
+    "contentType": "image/jpeg"
+  },
+  "a4510f8eb0bee88572098b0f.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/yala/yala-morning-safari.jpg",
+    "contentType": "image/jpeg"
+  },
+  "db9f7dbcdbdd0cc7d617be38.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/yala/yala-sithulpawwa-temple.jpg",
+    "contentType": "image/jpeg"
+  },
+  "6912c425238f428c2a36298d.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/udawalawe/udawalawe-safari.jpg",
+    "contentType": "image/jpeg"
+  },
+  "003cd0a2b36efa13464e5360.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/jaffna/jaffna-fort.jpg",
+    "contentType": "image/jpeg"
+  },
+  "859ef337cf5f6055bf63f724.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/jaffna/jaffna-islands.jpg",
+    "contentType": "image/jpeg"
+  },
+  "bb896dfee30bb9cf5979a5aa.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/jaffna/jaffna-nallur.jpg",
+    "contentType": "image/jpeg"
+  },
+  "428db1a497b0b605a29f982d.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/jaffna/jaffna-library.jpg",
+    "contentType": "image/jpeg"
+  },
+  "c377d11f3602e92ac9412d84.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/jaffna/jaffna-market.jpg",
+    "contentType": "image/jpeg"
+  },
+  "73c00ca9b4f51113b5da43c8.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/jaffna/jaffna-casuarina.jpg",
+    "contentType": "image/jpeg"
+  },
+  "70c25bbb17b7fad43ff5f586.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/jaffna/jaffna-casuarina-beach.jpg",
+    "contentType": "image/jpeg"
+  },
+  "47c83eddf6f3930a84ba7f63.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/jaffna/jaffna-library-visit.jpg",
+    "contentType": "image/jpeg"
+  },
+  "ad0f1ed434a9e7062e6308c4.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/jaffna/jaffna-nallur-kovil.jpg",
+    "contentType": "image/jpeg"
+  },
+  "e276f79689bffbd54392306f.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/ratnapura/ratnapura-gem.jpg",
+    "contentType": "image/jpeg"
+  },
+  "8616d121280450c10cfb4e96.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/ratnapura/ratnapura-waterfall.jpg",
+    "contentType": "image/jpeg"
+  },
+  "284fb372c9a791caaf937742.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/ratnapura/ratnapura-gem-museum.jpg",
+    "contentType": "image/jpeg"
+  },
+  "6a283c5b5c8c4fcc02863dbb.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/ratnapura/ratnapura-bopath-ella.jpg",
+    "contentType": "image/jpeg"
+  },
+  "b0728bfeacdb022f19f4e953.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/ratnapura/ratnapura-village.jpg",
+    "contentType": "image/jpeg"
+  },
+  "b4930dc8164100d5b5537efb.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/kataragama/kataragama-shrine.jpg",
+    "contentType": "image/jpeg"
+  },
+  "d4be925d4ae9e59bb4eba969.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/kataragama/kataragama-river.jpg",
+    "contentType": "image/jpeg"
+  },
+  "c399820ed52e292280679f0b.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/kataragama/kataragama-kiri-vehera.jpg",
+    "contentType": "image/jpeg"
+  },
+  "e0b39ebd7bc28f83cb8503b6.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/kataragama/kataragama-museum.jpg",
+    "contentType": "image/jpeg"
+  },
+  "d73b843380abf34519ac68b0.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/kataragama/kataragama-market.jpg",
+    "contentType": "image/jpeg"
+  },
+  "1a30eb909a12a9ba87bd9602.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/kataragama/kataragama-tissa-wewa.jpg",
+    "contentType": "image/jpeg"
+  },
+  "8a71e735c20f29115f221122.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/wilpattu/wilpattu-safari.jpg",
+    "contentType": "image/jpeg"
+  },
+  "3c85bd189b571eccabcdca4f.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/wilpattu/wilpattu-birds.jpg",
+    "contentType": "image/jpeg"
+  },
+  "9c6ca6375f7ccd133f2536de.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/wilpattu/wilpattu-morning-safari.jpg",
+    "contentType": "image/jpeg"
+  },
+  "fd848e251b3aff4165a476ce.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/wilpattu/wilpattu-evening-safari.jpg",
+    "contentType": "image/jpeg"
+  },
+  "bf63864dbd06cd112846e135.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/wilpattu/wilpattu-nature.jpg",
+    "contentType": "image/jpeg"
+  },
+  "bb751c63fa697571fb3e6c94.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/wilpattu/wilpattu-village.jpg",
+    "contentType": "image/jpeg"
+  },
+  "fd6b8e2cf16f1c86f1990544.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/anuradhapura/anuradhapura-cycle.jpg",
+    "contentType": "image/jpeg"
+  },
+  "442e97badf56f0279aa2e95d.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/anuradhapura/anuradhapura-sacred.jpg",
+    "contentType": "image/jpeg"
+  },
+  "a9165fdc32152bbafa8a71e6.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/anuradhapura/anuradhapura-bodhi.jpg",
+    "contentType": "image/jpeg"
+  },
+  "79366cbfc288be0fd26171ff.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/anuradhapura/anuradhapura-ruwanwelisaya.jpg",
+    "contentType": "image/jpeg"
+  },
+  "65407a600350561b57185d3d.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/anuradhapura/anuradhapura-jetavanaramaya.jpg",
+    "contentType": "image/jpeg"
+  },
+  "e929a58d2c16d9b1a8127c07.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/anuradhapura/anuradhapura-mihintale.jpg",
+    "contentType": "image/jpeg"
+  },
+  "742b692d6d56f95eacdde7a7.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/anuradhapura/anuradhapura-sri-maha-bodhi.jpg",
+    "contentType": "image/jpeg"
+  },
+  "bf0295558770e81bbd0930e6.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/polonnaruwa/polonnaruwa-cycle.jpg",
+    "contentType": "image/jpeg"
+  },
+  "e2991a12dc747437c03e3da0.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/polonnaruwa/polonnaruwa-heritage.jpg",
+    "contentType": "image/jpeg"
+  },
+  "e28a9214d7aaa30c1d10aa0a.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/polonnaruwa/polonnaruwa-reservoir.jpg",
+    "contentType": "image/jpeg"
+  },
+  "5bcc8f65891ecc1f3b28b717.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/polonnaruwa/polonnaruwa-royal-palace.jpg",
+    "contentType": "image/jpeg"
+  },
+  "0ac94f0826b6cede41ef476f.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/polonnaruwa/polonnaruwa-museum.jpg",
+    "contentType": "image/jpeg"
+  },
+  "87d2065d4529dabcd8f10f13.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/polonnaruwa/polonnaruwa-gal-vihara.jpg",
+    "contentType": "image/jpeg"
+  },
+  "9665d7b443ff45c9065ca74a.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/polonnaruwa/polonnaruwa-minneriya-safari.jpg",
+    "contentType": "image/jpeg"
+  },
+  "1156883b1e0ec85971b5e9f6.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/trincomalee/trinco-snorkel.jpg",
+    "contentType": "image/jpeg"
+  },
+  "2ed519f7424d75aa11b76b72.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/trincomalee/trinco-fort.jpg",
+    "contentType": "image/jpeg"
+  },
+  "5fb642ef6254d2067d03d3dd.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/trincomalee/trinco-nilaveli.jpg",
+    "contentType": "image/jpeg"
+  },
+  "e5f2377036bb6b1206a7e2f7.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/trincomalee/trinco-koneswaram.jpg",
+    "contentType": "image/jpeg"
+  },
+  "d8d6cd62574a5e8ed90ae304.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/trincomalee/trinco-marble-beach.jpg",
+    "contentType": "image/jpeg"
+  },
+  "dda599acb9eff40b61e605f0.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/trincomalee/trinco-whale-watching.jpg",
+    "contentType": "image/jpeg"
+  },
+  "10ad30722d5297d09925c3ab.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/trincomalee/trinco-hot-springs.jpg",
+    "contentType": "image/jpeg"
+  },
+  "5f355300ba247469dd3545df.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/arugam_bay/arugam-surf.jpg",
+    "contentType": "image/jpeg"
+  },
+  "96d539e7b810734c33f82fd9.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/arugam_bay/arugam-lagoon.jpg",
+    "contentType": "image/jpeg"
+  },
+  "510c747cd7cbecc7731c2170.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/arugam_bay/arugam-main-point.jpg",
+    "contentType": "image/jpeg"
+  },
+  "2a0bcffa51838e46fff87293.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/arugam_bay/arugam-elephant-rock.jpg",
+    "contentType": "image/jpeg"
+  },
+  "c30a6f5f3f75d9f16c19286d.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/arugam_bay/arugam-pottuvil-lagoon.jpg",
+    "contentType": "image/jpeg"
+  },
+  "a132e807d37ef20e6f56577b.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/arugam_bay/arugam-sunset-surf-watch.jpg",
+    "contentType": "image/jpeg"
+  },
+  "f9372dc934b7513d96950975.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/dambulla/dambulla-caves.jpg",
+    "contentType": "image/jpeg"
+  },
+  "217e9db1dc16125bcf392267.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/dambulla/dambulla-market.jpg",
+    "contentType": "image/jpeg"
+  },
+  "3abdea9e6ff92d0b50be22ae.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/dambulla/dambulla-golden-temple.jpg",
+    "contentType": "image/jpeg"
+  },
+  "69703c0bc2c71b1f138f49d5.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/dambulla/dambulla-arboretum.jpg",
+    "contentType": "image/jpeg"
+  },
+  "a5d824f0f665d4d82bf4e98c.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/dambulla/dambulla-village.jpg",
+    "contentType": "image/jpeg"
+  },
+  "ec4899eefe97eca25380f595.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/dambulla/dambulla-namal-uyana.jpg",
+    "contentType": "image/jpeg"
+  },
+  "8925c4a1937db228705de647.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/negombo/negombo-lagoon.jpg",
+    "contentType": "image/jpeg"
+  },
+  "9c527a845aa6ffd58468fb9f.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/negombo/negombo-market.jpg",
+    "contentType": "image/jpeg"
+  },
+  "2a522e100a2b1d2aeef1a1e8.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/negombo/negombo-beach.jpg",
+    "contentType": "image/jpeg"
+  },
+  "a6e1def40c0de5c8af5df7a2.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/negombo/negombo-dutch-canal.jpg",
+    "contentType": "image/jpeg"
+  },
+  "0a63d6eaa4f35a51d9196416.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/negombo/negombo-wetland.jpg",
+    "contentType": "image/jpeg"
+  },
+  "535c9fe8d5a02ba9c43b3eb5.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/negombo/negombo-beach-relaxation.jpg",
+    "contentType": "image/jpeg"
+  },
+  "644c3beebf7c06599dfde865.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/negombo/negombo-st-marys.jpg",
+    "contentType": "image/jpeg"
+  },
+  "9c651265cba94823b8ecaf67.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/bentota/bentota-water.jpg",
+    "contentType": "image/jpeg"
+  },
+  "158763067bd540a8e68823ad.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/bentota/bentota-beach-day.jpg",
+    "contentType": "image/jpeg"
+  },
+  "0cd0ab3ed9c09cb91258b84e.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/bentota/bentota-lunuganga.jpg",
+    "contentType": "image/jpeg"
+  },
+  "ddda5fa11fd76d159e9d29bc.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/hikkaduwa/hikkaduwa-reef.jpg",
+    "contentType": "image/jpeg"
+  },
+  "805e2fc3d90565b8ac5332c0.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/hikkaduwa/hikkaduwa-surf.jpg",
+    "contentType": "image/jpeg"
+  },
+  "fe571db158824f58025421c6.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/hikkaduwa/hikkaduwa-beach.jpg",
+    "contentType": "image/jpeg"
+  },
+  "3b10b9f45d611e53b339fccf.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/hikkaduwa/hikkaduwa-turtle-watch.jpg",
+    "contentType": "image/jpeg"
+  },
+  "45502a21db4e5442906ca8d7.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/hikkaduwa/hikkaduwa-glass-boat.jpg",
+    "contentType": "image/jpeg"
+  },
+  "adf968255b2ac78b46d14c78.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/hikkaduwa/hikkaduwa-turtle-hatchery.jpg",
+    "contentType": "image/jpeg"
+  },
+  "a3c80e8715dcdb19d37be217.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/matara/matara-fort.jpg",
+    "contentType": "image/jpeg"
+  },
+  "ecb813e95950dbc61f079bfc.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/matara/matara-temple.jpg",
+    "contentType": "image/jpeg"
+  },
+  "53b3093c2d222bbc58f6b5fc.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/colombo/colombo-city.jpg",
+    "contentType": "image/jpeg"
+  },
+  "a3daddea629203f30a088935.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/colombo/colombo-food.jpg",
+    "contentType": "image/jpeg"
+  },
+  "69c2cedbbcd693f28e350893.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/colombo/colombo-museum.jpg",
+    "contentType": "image/jpeg"
+  },
+  "e383b574509daa71a7d18fc7.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/colombo/colombo-red-mosque.jpg",
+    "contentType": "image/jpeg"
+  },
+  "5348b78b1d6c2035c45b2a46.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/colombo/colombo-dutch-hospital.jpg",
+    "contentType": "image/jpeg"
+  },
+  "cf41bbd773d6b10114ce1dfe.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/colombo/colombo-gangaramaya.jpg",
+    "contentType": "image/jpeg"
+  },
+  "c88d022bc8fb96aeae798a6e.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/colombo/colombo-galle-face.jpg",
+    "contentType": "image/jpeg"
+  },
+  "db0ad1dc3a1912b3c21ae031.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/colombo/colombo-pettah-market.jpg",
+    "contentType": "image/jpeg"
+  },
+  "34fa30a4698c337365f60431.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/colombo/colombo-dutch-museum.jpg",
+    "contentType": "image/jpeg"
+  },
+  "b287180e30102a0bdfde2350.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/colombo/colombo-cafe-stop.jpg",
+    "contentType": "image/jpeg"
+  },
+  "8c59cadd39614721bf2fc292.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/colombo/colombo-seema-malaka.jpg",
+    "contentType": "image/jpeg"
+  },
+  "89ca0a1bd209a76cb83b5d93.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/colombo/colombo-lotus-tower.jpg",
+    "contentType": "image/jpeg"
+  },
+  "5884e497f9ea784829715614.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/colombo/colombo-independence-square.jpg",
+    "contentType": "image/jpeg"
+  },
+  "32d741ff4bda39a90e6144b6.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/colombo/colombo-viharamahadevi-park.jpg",
+    "contentType": "image/jpeg"
+  },
+  "eec9f637fa2c9a29d0bff27d.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/colombo/colombo-beira-lake.jpg",
+    "contentType": "image/jpeg"
+  },
+  "31a23c556e6484835404b2e1.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/colombo/colombo-mount-lavinia.jpg",
+    "contentType": "image/jpeg"
+  },
+  "00ba4a1a40a0547dbf58fbbc.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/colombo/colombo-harbour-cruise.jpg",
+    "contentType": "image/jpeg"
+  },
+  "a4ad81de07e5166c310200d9.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/colombo/colombo-kelaniya-vihara.jpg",
+    "contentType": "image/jpeg"
+  },
+  "1db73e33f48d2a1a4be994c6.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/unawatuna/unawatuna-peace-pagoda.jpg",
+    "contentType": "image/jpeg"
+  },
+  "6c648ad4353fc7ce68109df9.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/unawatuna/unawatuna-rumassala-walk.jpg",
+    "contentType": "image/jpeg"
+  },
+  "58229076c8340a056028fa84.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/unawatuna/unawatuna-beach-snorkeling.jpg",
+    "contentType": "image/jpeg"
+  },
+  "ccb1c4e344e66b086f3dfcd0.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/tangalle/tangalle-blow-hole.jpg",
+    "contentType": "image/jpeg"
+  },
+  "6bbcab175e922f04da4f82d6.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/tangalle/tangalle-turtle-watch.jpg",
+    "contentType": "image/jpeg"
+  },
+  "bb2c179c6bc597967bcf40a3.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/tangalle/tangalle-beach.jpg",
+    "contentType": "image/jpeg"
+  },
+  "b0ee6961df5c9d426e7359c3.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/pasikuda/pasikuda-batticaloa-tour.jpg",
+    "contentType": "image/jpeg"
+  },
+  "4b8d6954198ecacb517962f4.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/pasikuda/pasikuda-snorkeling.jpg",
+    "contentType": "image/jpeg"
+  },
+  "600f1d82f62135040fb10600.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/pasikuda/pasikuda-beach-day.jpg",
+    "contentType": "image/jpeg"
+  },
+  "0b2e57f531f5cfccfbd33445.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/kalpitiya/kalpitiya-bar-reef.jpg",
+    "contentType": "image/jpeg"
+  },
+  "df129dda2bd2b659d9cdcc0b.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/kalpitiya/kalpitiya-dolphin-whale.jpg",
+    "contentType": "image/jpeg"
+  },
+  "21de001a80014cc93ade5936.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/kalpitiya/kalpitiya-lagoon-safari.jpg",
+    "contentType": "image/jpeg"
+  },
+  "b82494c4cc1ce5f158bb251a.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/kalpitiya/kalpitiya-kite-surfing.jpg",
+    "contentType": "image/jpeg"
+  },
+  "2ce7e7463dcc28d286aac7c2.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/haputale/haputale-adisham.jpg",
+    "contentType": "image/jpeg"
+  },
+  "31e6e6a6057ffde2b0f80080.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/haputale/haputale-bambarakanda.jpg",
+    "contentType": "image/jpeg"
+  },
+  "21c83159f5f72781f5132008.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/haputale/haputale-tea-factory.jpg",
+    "contentType": "image/jpeg"
+  },
+  "7a2a48acf1061597eed8ad36.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/haputale/haputale-lipton-seat.jpg",
+    "contentType": "image/jpeg"
+  },
+  "b4b0cb6ddb1b25cb7862d09d.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/mirissa/mirissa-ussangoda.jpg",
+    "contentType": "image/jpeg"
+  },
+  "032dab3b9ff2f18d520535ed.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/arugam_bay/arugam-kumana.jpg",
+    "contentType": "image/jpeg"
+  },
+  "740bda93f21e492ab0e498e7.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/arugam_bay/arugam-kumana-safari.jpg",
+    "contentType": "image/jpeg"
+  },
+  "eb8a4cefdd6ffbd3ef55311e.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/negombo/negombo-seafood.jpg",
+    "contentType": "image/jpeg"
+  },
+  "97154c62f3efb2fb6a9e362e.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/bentota/bentota-river.jpg",
+    "contentType": "image/jpeg"
+  },
+  "ec8b6201a2633de4f9c9f72f.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/bentota/bentota-brief-garden.jpg",
+    "contentType": "image/jpeg"
+  },
+  "67523c96f5b8de8c117d01e6.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/bentota/bentota-turtle-hatchery.jpg",
+    "contentType": "image/jpeg"
+  },
+  "687808810bc93cc068eb273c.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/tangalle/tangalle-mulkirigala.jpg",
+    "contentType": "image/jpeg"
+  },
+  "8955486ad35593f80c5321ae.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/ella.jpg",
+    "contentType": "image/jpeg"
+  },
+  "d6dcf6f718df159b75213aa8.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/ella/ella-divurumpola-temple.jpg",
+    "contentType": "image/jpeg"
+  },
+  "66d39fa245b48e2fb826ed8f.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/mirissa.jpg",
+    "contentType": "image/jpeg"
+  },
+  "e0860012acb9aa0ed46c0586.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/kitulgala/kitulgala-caving.jpg",
+    "contentType": "image/jpeg"
+  },
+  "3db2857f9e9e97a41fdc4d23.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/kitulgala/kitulgala-birdwatching.jpg",
+    "contentType": "image/jpeg"
+  },
+  "0dbee8e5ed1d9e5eadcfbce2.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/yala.jpg",
+    "contentType": "image/jpeg"
+  },
+  "6df85bf3665acb5dc6814ef5.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/activities/negombo/negombo-munneswaram.jpg",
+    "contentType": "image/jpeg"
+  },
+  "f4c7bbac0b6df9b4877a02aa.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/destinations/sigiriya.jpg",
+    "contentType": "image/jpeg"
+  },
+  "baf046e20ddc34b0567becd3.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/destinations/ella.jpg",
+    "contentType": "image/jpeg"
+  },
+  "8fc79fe479fff10cafa6f2a8.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/destinations/mirissa.jpg",
+    "contentType": "image/jpeg"
+  },
+  "03226e3564c8a4eae08fc12b.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/destinations/kandy.jpg",
+    "contentType": "image/jpeg"
+  },
+  "d6b2f0333e4f7607307b6c77.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/destinations/galle.jpg",
+    "contentType": "image/jpeg"
+  },
+  "1d132b19621ed71aaf5b65a7.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/destinations/nuwara.jpg",
+    "contentType": "image/jpeg"
+  },
+  "50fe1b0051665746fd554286.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/destinations/kitulgala.jpg",
+    "contentType": "image/jpeg"
+  },
+  "382b3a17d5897e5a54a45d17.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/destinations/yala.jpg",
+    "contentType": "image/jpeg"
+  },
+  "44a3ea60093bee756a4c3195.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/destinations/udawalawe.jpg",
+    "contentType": "image/jpeg"
+  },
+  "6a0dab8226a69538fe1912c7.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/destinations/jaffna.jpg",
+    "contentType": "image/jpeg"
+  },
+  "b218e77ba38f48a5f3c127e1.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/destinations/ratnapura.jpg",
+    "contentType": "image/jpeg"
+  },
+  "4c5c0fb23a37dd250e0d29ae.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/destinations/kataragama.jpg",
+    "contentType": "image/jpeg"
+  },
+  "9311735ead7503206fc9ff8e.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/destinations/wilpattu.jpg",
+    "contentType": "image/jpeg"
+  },
+  "f6d08c61bba1242cc489dec8.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/destinations/anuradhapura.jpg",
+    "contentType": "image/jpeg"
+  },
+  "9fbe210db70af07a9c0a6bea.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/destinations/polonnaruwa.jpg",
+    "contentType": "image/jpeg"
+  },
+  "1c1e5dde288d46e837738fc7.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/destinations/trincomalee.jpg",
+    "contentType": "image/jpeg"
+  },
+  "eb7f8bc8b1bb2cf020c255e9.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/destinations/arugam_bay.jpg",
+    "contentType": "image/jpeg"
+  },
+  "2a71dd3df925093e7d18c04c.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/destinations/dambulla.jpg",
+    "contentType": "image/jpeg"
+  },
+  "14e9b1049865419d11ec883e.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/destinations/negombo.jpg",
+    "contentType": "image/jpeg"
+  },
+  "880788dce7fb6eebca989ef6.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/destinations/bentota.jpg",
+    "contentType": "image/jpeg"
+  },
+  "c11adbbe87ceffa5fae0b8d5.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/destinations/hikkaduwa.jpg",
+    "contentType": "image/jpeg"
+  },
+  "2e3e5c8ad808c03e03a4f241.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/destinations/matara.jpg",
+    "contentType": "image/jpeg"
+  },
+  "ebf0ffbb93ce518a8f87652e.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/destinations/colombo.jpg",
+    "contentType": "image/jpeg"
+  },
+  "d5550c677efbf1b0920b8a64.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/destinations/unawatuna.jpg",
+    "contentType": "image/jpeg"
+  },
+  "1047e92679abf6feb1a7cd96.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/destinations/tangalle.jpg",
+    "contentType": "image/jpeg"
+  },
+  "6fde7b4f34d2f15dcf1fd4b2.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/destinations/pasikuda.jpg",
+    "contentType": "image/jpeg"
+  },
+  "0cc39a792be946b7aaf42182.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/destinations/kalpitiya.jpg",
+    "contentType": "image/jpeg"
+  },
+  "3dea809b4541d6d50414ae8b.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/destinations/haputale.jpg",
+    "contentType": "image/jpeg"
+  },
+  "4c23831f032e1240af033290.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/nuwara.jpg",
+    "contentType": "image/jpeg"
+  },
+  "2c5b8fc3f06d55e61a4b2a3b.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/sigiriya.jpg",
+    "contentType": "image/jpeg"
+  },
+  "9aac5c5f0fdb3e55cb1ec4f1.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/airline-emirates.jpg",
+    "contentType": "image/jpeg"
+  },
+  "61d6568b4d7e248cc41ec981.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/airline-qatar.jpg",
+    "contentType": "image/jpeg"
+  },
+  "598c43bd7d60a73762bbd157.jpg": {
+    "original": "skyconnect user app/SkyConnect-user-app/assets/images/airline-singapore.jpg",
+    "contentType": "image/jpeg"
+  }
+}

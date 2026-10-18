@@ -1,0 +1,10 @@
+import { initializeApp, applicationDefault } from 'firebase-admin/app';
+import { getAuth } from 'firebase-admin/auth';
+import { cliCredential } from './cli-session.mjs';
+const args = process.argv.slice(2);
+const uid = args.find(arg => !arg.startsWith('--'));
+if (!uid || !process.env.GOOGLE_CLOUD_PROJECT) throw new Error('Set GOOGLE_CLOUD_PROJECT and run npm run admin -- AUTH_UID [--firebase-cli]. Without --firebase-cli, an authorized Application Default Credential is required.');
+initializeApp({ credential: args.includes('--firebase-cli') ? cliCredential : applicationDefault(), projectId: process.env.GOOGLE_CLOUD_PROJECT });
+const user = await getAuth().getUser(uid);
+await getAuth().setCustomUserClaims(uid, { ...user.customClaims, admin: true });
+console.log('Admin claim assigned. Sign out and sign in again to refresh the token.');

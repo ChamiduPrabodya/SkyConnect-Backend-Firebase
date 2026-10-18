@@ -1,0 +1,12 @@
+{
+  "indexes": [
+    { "collectionGroup": "notifications", "queryScope": "COLLECTION_GROUP", "fields": [
+      { "fieldPath": "pushState", "order": "ASCENDING" },
+      { "fieldPath": "nextAttemptAt", "order": "ASCENDING" }
+    ] }
+  ],
+  "fieldOverrides": [
+    { "collectionGroup": "likes", "fieldPath": "createdAt", "indexes": [{ "order": "ASCENDING", "queryScope": "COLLECTION_GROUP" }] },
+    { "collectionGroup": "savedPlans", "fieldPath": "savedAt", "indexes": [{ "order": "ASCENDING", "queryScope": "COLLECTION_GROUP" }] }
+  ]
+}
