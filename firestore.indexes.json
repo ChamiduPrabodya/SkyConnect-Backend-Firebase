@@ -6,6 +6,8 @@
     ] }
   ],
   "fieldOverrides": [
+    { "collectionGroup": "notifications", "fieldPath": "uid", "indexes": [{ "order": "ASCENDING", "queryScope": "COLLECTION_GROUP" }] },
+    { "collectionGroup": "notifications", "fieldPath": "sourceId", "indexes": [{ "order": "ASCENDING", "queryScope": "COLLECTION_GROUP" }] },
     { "collectionGroup": "likes", "fieldPath": "createdAt", "indexes": [{ "order": "ASCENDING", "queryScope": "COLLECTION_GROUP" }] },
     { "collectionGroup": "savedPlans", "fieldPath": "savedAt", "indexes": [{ "order": "ASCENDING", "queryScope": "COLLECTION_GROUP" }] }
   ]

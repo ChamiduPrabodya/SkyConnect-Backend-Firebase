@@ -70,6 +70,13 @@ test('worker lease prevents two senders and releases cleanly',async()=>{
   assert.equal((await other.tick()).changes,0);
 });
 
+test('Spark worker stops processing when Cloud Functions mode is activated', async () => {
+  const { store, worker } = setup(async () => assert.fail('Worker must not send in Functions mode'));
+  await store.commit([store.put('notificationWorker/config', { mode: 'functions' })]);
+  assert.deepEqual(await worker.tick(), { skipped: 'cloud-functions-mode' });
+  assert.equal(await store.get('notificationWorker/lease'), null);
+});
+
 test('retries only failed devices, prunes expired tokens, and preserves a concurrent read flag',async()=>{
   const sent=[];
   const {store,worker}=setup(async msg=>{sent.push(msg.token);if(msg.token==='expired')throw Object.assign(new Error('expired'),{code:'messaging/registration-token-not-registered'});if(msg.token==='temporary'&&sent.filter(t=>t==='temporary').length===1)throw Object.assign(new Error('retry'),{code:'messaging/server-unavailable'});const old=await store.get('users/traveler/notifications/n');await store.commit([store.put(old.path,{...old.data,read:true,readAt:'read'})]);});

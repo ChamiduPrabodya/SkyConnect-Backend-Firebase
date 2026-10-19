@@ -1,7 +1,8 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    function signedIn() { return request.auth != null; }
+    function deleting(uid) { return exists(/databases/$(database)/documents/accountDeletionRequests/$(uid)); }
+    function signedIn() { return request.auth != null && !deleting(request.auth.uid); }
     function admin() { return signedIn() && request.auth.token.get('admin', false) == true; }
     function owner(uid) { return signedIn() && request.auth.uid == uid; }
     function ownPartner(data) { return signedIn() && data.get('partnerId', '') == request.auth.uid; }
@@ -10,13 +11,45 @@ service cloud.firestore {
     function validNotificationTime() {
       return !request.resource.data.keys().hasAny(['notificationUpdatedAt']) || request.resource.data.notificationUpdatedAt == request.time || (resource != null && request.resource.data.notificationUpdatedAt == resource.data.get('notificationUpdatedAt', null));
     }
+    function validConsent(value) {
+      return value is map && value.keys().hasOnly(['agreed','timestamp','version','scopes'])
+        && value.agreed is bool && value.timestamp == request.time && value.version == '1.0'
+        && value.scopes is list && value.scopes.size() <= 3
+        && value.scopes.hasOnly(['travel_preferences','location_matching','partner_profile'])
+        && (value.agreed ? value.scopes.size() > 0 : value.scopes.size() == 0);
+    }
+    function consentReceipt(uid) {
+      let recordId = request.resource.data.pdpaConsentRecordId;
+      return recordId is string && recordId.matches('^[A-Za-z0-9_-]+$')
+        && validConsent(request.resource.data.pdpaConsent)
+        && request.resource.data.pdpaConsent == getAfter(/databases/$(database)/documents/users/$(uid)/consents/$(recordId)).data;
+    }
+    match /accountDeletionRequests/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow create: if request.auth != null && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['uid','status','requestedAt','authTime'])
+        && request.resource.data.uid == uid && request.resource.data.status == 'pending'
+        && request.resource.data.requestedAt == request.time
+        && request.resource.data.authTime == request.auth.token.auth_time
+        && request.auth.token.auth_time >= request.time.toMillis() / 1000 - 300
+        && request.auth.token.auth_time <= request.time.toMillis() / 1000 + 30;
+      // Only the trusted backend updates/completes requests. Keeping a private
+      // receipt temporarily also prevents old ID tokens from recreating data.
+    }
 
     match /users/{uid} {
       allow read: if owner(uid) || admin();
-      allow create: if owner(uid) && request.resource.data.uid == uid && request.resource.data.role == 'traveler';
-      allow update: if admin() || (owner(uid) && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name','fullName','phone','country','updatedAt']));
+      allow create: if owner(uid) && request.resource.data.uid == uid && request.resource.data.role == 'traveler' && consentReceipt(uid) && request.resource.data.pdpaConsent.agreed == true;
+      allow update: if (admin() || owner(uid))
+        && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['pdpaConsent','pdpaConsentRecordId']) || (owner(uid) && consentReceipt(uid)))
+        && (admin() || request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name','fullName','phone','country','updatedAt','pdpaConsent','pdpaConsentRecordId']));
       allow delete: if admin();
       match /settings/{id} { allow read, write: if owner(uid) || admin(); }
+      match /consents/{id} {
+        allow read: if owner(uid) || admin();
+        allow create: if owner(uid) && validConsent(request.resource.data);
+        // Consent history is append-only; the deletion backend removes it.
+      }
       match /savedPlans/{id} { allow read, write: if owner(uid) || admin(); }
       match /devices/{id} {
         allow read, delete: if owner(uid);
@@ -43,8 +76,10 @@ service cloud.firestore {
 
     match /partners/{id} {
       allow read: if admin() || owner(id) || resource.data.status == 'Approved';
-      allow create: if owner(id) && validNotificationTime() && request.resource.data.uid == id && request.resource.data.id == id && request.resource.data.status == 'Pending' && request.resource.data.verified == false && request.resource.data.type in ['Tourism','Airline'];
-      allow update: if admin() || (owner(id) && validNotificationTime() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name','phone','category','city','location','country','headquarters','contactName','description','website','contact','iata','icao','aoc','bsp','fleet','founded','sltdaLicense','brNumber','businessType','preferences','updatedAt','notificationUpdatedAt']));
+      allow create: if owner(id) && consentReceipt(id) && request.resource.data.pdpaConsent.agreed == true && validNotificationTime() && request.resource.data.uid == id && request.resource.data.id == id && request.resource.data.status == 'Pending' && request.resource.data.verified == false && request.resource.data.type in ['Tourism','Airline'];
+      allow update: if (admin() || owner(id))
+        && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['pdpaConsent','pdpaConsentRecordId']) || (owner(id) && consentReceipt(id)))
+        && (admin() || (validNotificationTime() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name','phone','category','city','location','country','headquarters','contactName','description','website','contact','iata','icao','aoc','bsp','fleet','founded','sltdaLicense','brNumber','businessType','preferences','updatedAt','notificationUpdatedAt','pdpaConsent','pdpaConsentRecordId'])));
       allow delete: if admin();
     }
     match /offers/{id} {

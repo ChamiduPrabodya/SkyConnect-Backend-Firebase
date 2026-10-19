@@ -4,6 +4,7 @@ import { getMessaging } from 'firebase-admin/messaging';
 import { cliCredential, cloudRequest } from './cli-session.mjs';
 import { NotificationStore } from '../notifications/store.mjs';
 import { NotificationWorker } from '../notifications/worker.mjs';
+import { createPrivacyRuntime } from '../functions/src/privacy-runtime.mjs';
 
 const projectId = process.env.GOOGLE_CLOUD_PROJECT;
 if (!projectId) throw new Error('Set GOOGLE_CLOUD_PROJECT. See NOTIFICATIONS.md.');
@@ -19,10 +20,11 @@ const request = useCli ? cloudRequest : async (url, options = {}) => {
 };
 const worker = new NotificationWorker({
   store: new NotificationStore(projectId, request),
-  account: async uid => { if(typeof uid !== 'string' || !uid || uid.length > 128 || uid.includes('/')) return null; try { const user = await getAuth(app).getUser(uid); return user.disabled ? null : user; } catch (e) { if (e.code === 'auth/user-not-found' || e.code === 'auth/invalid-uid') return null; throw e; } },
+  account: async uid => { if(typeof uid !== 'string' || !uid || uid.length > 128 || uid.includes('/')) return null; if (await privacy.store.get(`accountDeletionRequests/${uid}`)) return null; try { const user = await getAuth(app).getUser(uid); return user.disabled ? null : user; } catch (e) { if (e.code === 'auth/user-not-found' || e.code === 'auth/invalid-uid') return null; throw e; } },
   send: message => getMessaging(app).send(message),
   adminUids: (process.env.NOTIFICATION_ADMIN_UIDS || '').split(',').map(s => s.trim()).filter(Boolean),
 });
+const privacy = createPrivacyRuntime({ projectId, request, auth: getAuth(app), storageBucket: process.env.FIREBASE_STORAGE_BUCKET });
 const interval = Number(process.env.NOTIFICATION_POLL_MS || 60000);
 if (!Number.isSafeInteger(interval) || interval < 60000 || interval > 43200000) throw new Error('NOTIFICATION_POLL_MS must be an integer between 60000 and 43200000.');
 console.log(JSON.stringify({ event: 'worker-start', projectId, pollMs: interval }));
@@ -31,7 +33,11 @@ const stop = () => { stopping = true; wake?.(); };
 process.on('SIGINT', stop); process.on('SIGTERM', stop);
 try {
   do {
-    try { console.log(JSON.stringify({ event: 'tick', ...await worker.tick() })); }
+    try {
+      const functionsMode = (await privacy.store.get('notificationWorker/config'))?.data.mode === 'functions';
+      const deletedAccounts = functionsMode ? 0 : await privacy.processor.tick();
+      console.log(JSON.stringify({ event: 'tick', deletedAccounts, ...await worker.tick() }));
+    }
     catch (error) { console.error(JSON.stringify({ event: 'worker-error', code: error.code || error.status || 'unknown', message: error.status ? error.message : 'Check backend credentials, FCM setup and Firestore indexes.' })); if (process.argv.includes('--once')) throw error; }
     if (process.argv.includes('--once') || stopping) break;
     await new Promise(resolve => { const timer = setTimeout(resolve, interval); wake = () => { clearTimeout(timer); resolve(); }; });

@@ -1,7 +1,7 @@
 import test, { before, after, beforeEach } from 'node:test';
 import fs from 'node:fs';
 import { initializeTestEnvironment, assertFails, assertSucceeds } from '@firebase/rules-unit-testing';
-import { doc, setDoc, getDoc, updateDoc, collection, getDocs, query, where, serverTimestamp, Timestamp } from 'firebase/firestore';
+import { doc, setDoc, getDoc, updateDoc, collection, collectionGroup, getDocs, query, where, serverTimestamp, Timestamp, writeBatch } from 'firebase/firestore';
 let env;
 const enabled = Boolean(process.env.FIRESTORE_EMULATOR_HOST);
 before(async () => {
@@ -37,6 +37,17 @@ ruleTest('preferences, saved plans, and likes sync only within the owning accoun
     await assertFails(setDoc(doc(bob,'users','alice',list,id),value));
   }
 });
+
+ruleTest('a traveler can complete an Auth-created baseline without changing its identity or role', async () => {
+  await env.withSecurityRulesDisabled(ctx => setDoc(doc(ctx.firestore(), 'users', 'alice'), {
+    uid: 'alice', id: 'alice', role: 'traveler', name: '', fullName: '', email: 'alice@example.com',
+    phone: '', country: '', createdAt: '2026-10-18',
+  }));
+  const alice = env.authenticatedContext('alice').firestore();
+  await assertSucceeds(updateDoc(doc(alice, 'users', 'alice'), { name: 'Alice', fullName: 'Alice', phone: '123', country: 'LK', updatedAt: '2026-10-18' }));
+  await assertFails(updateDoc(doc(alice, 'users', 'alice'), { role: 'admin' }));
+  await assertFails(updateDoc(doc(alice, 'users', 'alice'), { uid: 'other' }));
+});
 ruleTest('partners cannot self-approve or overwrite other providers listings', async () => {
   const owner = env.authenticatedContext('hotel-owner').firestore();
   await env.withSecurityRulesDisabled(ctx => updateDoc(doc(ctx.firestore(),'partners','hotel-owner'),{status:'Pending',verified:false}));
@@ -64,6 +75,30 @@ ruleTest('airline route changes require approval and retain ownership', async ()
   await assertSucceeds(updateDoc(doc(airline,'routes','flight'),{flightNo:'SC123',status:'pending'}));
   await assertFails(updateDoc(doc(airline,'routes','flight'),{status:'approved'}));
 });
+ruleTest('admins see all trips; airline and cabana owners can read only their assigned requests after submission', async () => {
+  const traveler = env.authenticatedContext('traveler').firestore();
+  const airline = env.authenticatedContext('airline-owner').firestore();
+  const cabana = env.authenticatedContext('hotel-owner').firestore();
+  const other = env.authenticatedContext('other').firestore();
+  const admin = env.authenticatedContext('admin', {admin:true}).firestore();
+  const guest = env.unauthenticatedContext().firestore();
+  await assertSucceeds(setDoc(doc(traveler,'users','traveler','savedPlans','trip'), {savedAt:'2026-10-19',plan:{flightId:'flight',hotelId:'hotel'}}));
+  for (const provider of [airline,cabana,other,guest]) await assertFails(getDoc(doc(provider,'users','traveler','savedPlans','trip')));
+  await assertSucceeds(getDocs(collectionGroup(admin,'savedPlans')));
+  await assertSucceeds(setDoc(doc(traveler,'bookings','air'), {userId:'traveler',kind:'flight',routeId:'flight',airlineId:'airline-owner',status:'Pending',traveler:{name:'Alice',phone:'123'}}));
+  await assertSucceeds(setDoc(doc(traveler,'bookings','cabana'), {userId:'traveler',kind:'stay',offerId:'hotel',partnerId:'hotel-owner',status:'Pending',traveler:{name:'Alice',phone:'123'}}));
+  await assertSucceeds(getDoc(doc(airline,'bookings','air')));
+  await assertSucceeds(getDoc(doc(cabana,'bookings','cabana')));
+  await assertFails(getDoc(doc(airline,'bookings','cabana')));
+  await assertFails(getDoc(doc(cabana,'bookings','air')));
+  for (const db of [other,guest]) for (const id of ['air','cabana']) await assertFails(getDoc(doc(db,'bookings',id)));
+  for (const db of [airline,cabana,other,guest]) await assertFails(getDocs(collection(db,'bookings')));
+  await assertSucceeds(getDocs(query(collection(airline,'bookings'),where('airlineId','==','airline-owner'))));
+  await assertSucceeds(getDocs(query(collection(cabana,'bookings'),where('partnerId','==','hotel-owner'))));
+  await assertSucceeds(getDocs(collection(admin,'bookings')));
+  await assertFails(updateDoc(doc(airline,'bookings','air'),{airlineId:'other'}));
+  await assertFails(updateDoc(doc(cabana,'bookings','cabana'),{partnerId:'other'}));
+});
 ruleTest('push tokens are private and clients cannot create notifications or change delivery state', async () => {
   const alice=env.authenticatedContext('alice').firestore(), bob=env.authenticatedContext('bob').firestore();
   const device={app:'traveler',provider:'fcm',platform:'web',token:'private-device-token-123456789',enabled:true,updatedAt:serverTimestamp()};
@@ -83,7 +118,52 @@ ruleTest('only admins can queue messages; notification cursors and watch timesta
   await assertSucceeds(setDoc(doc(admin,'notificationRequests','valid'),{...request,createdBy:'admin'}));
   await assertFails(setDoc(doc(admin,'notificationRequests','wrong-sender'),request));
   await assertFails(setDoc(doc(alice,'notificationWorker','state'),{cursor:'fake'}));
+  await assertFails(setDoc(doc(admin,'notificationWorker','config'),{mode:'functions'}));
+  await assertFails(setDoc(doc(admin,'notificationEvents','event'),{processed:true}));
   const provider=env.authenticatedContext('hotel-owner').firestore();
   await assertSucceeds(updateDoc(doc(provider,'partners','hotel-owner'),{phone:'123',notificationUpdatedAt:serverTimestamp()}));
   await assertFails(updateDoc(doc(provider,'partners','hotel-owner'),{phone:'456',notificationUpdatedAt:Timestamp.fromMillis(0)}));
+});
+
+ruleTest('registration consent is explicit, server-timed, private and immutable in its audit receipt', async () => {
+  const alice=env.authenticatedContext('alice').firestore(), bob=env.authenticatedContext('bob').firestore();
+  const profile={uid:'alice',id:'alice',role:'traveler',name:'Alice'};
+  await assertFails(setDoc(doc(alice,'users','alice'),profile));
+  const consent={agreed:true,timestamp:serverTimestamp(),version:'1.0',scopes:['travel_preferences','location_matching']};
+  const batch=writeBatch(alice);
+  batch.set(doc(alice,'users','alice','consents','registration'),consent);
+  batch.set(doc(alice,'users','alice'),{...profile,pdpaConsent:consent,pdpaConsentRecordId:'registration'});
+  await assertSucceeds(batch.commit());
+  await assertFails(updateDoc(doc(alice,'users','alice','consents','registration'),{agreed:false}));
+  await assertFails(getDoc(doc(bob,'users','alice','consents','registration')));
+  await assertFails(setDoc(doc(alice,'users','alice','consents','forged'),{...consent,timestamp:Timestamp.fromMillis(0)}));
+  await assertFails(updateDoc(doc(alice,'users','alice'),{pdpaConsent:{...consent,version:'unknown'},pdpaConsentRecordId:'registration'}));
+});
+ruleTest('a partner can atomically register with its own privacy receipt but cannot forge another UID consent',async()=>{
+  const owner=env.authenticatedContext('new-partner').firestore();
+  const consent={agreed:true,timestamp:serverTimestamp(),version:'1.0',scopes:['partner_profile','location_matching']};
+  const profile={uid:'new-partner',id:'new-partner',type:'Airline',status:'Pending',verified:false,pdpaConsent:consent,pdpaConsentRecordId:'registration'};
+  const batch=writeBatch(owner);batch.set(doc(owner,'users','new-partner','consents','registration'),consent);batch.set(doc(owner,'partners','new-partner'),profile);
+  await assertSucceeds(batch.commit());
+  await assertFails(setDoc(doc(owner,'users','someone-else','consents','registration'),consent));
+});
+ruleTest('deletion queue requires the owning UID and a recent auth_time; clients cannot complete requests',async()=>{
+  const recent=Math.floor(Date.now()/1000);
+  const alice=env.authenticatedContext('alice',{auth_time:recent}).firestore(),bob=env.authenticatedContext('bob',{auth_time:recent}).firestore();
+  const stale=env.authenticatedContext('stale',{auth_time:recent-301}).firestore();
+  const request=uid=>({uid,status:'pending',requestedAt:serverTimestamp(),authTime:recent});
+  await assertFails(setDoc(doc(bob,'accountDeletionRequests','alice'),request('alice')));
+  await assertFails(setDoc(doc(stale,'accountDeletionRequests','stale'),{...request('stale'),authTime:recent-301}));
+  await assertFails(setDoc(doc(alice,'accountDeletionRequests','alice'),{...request('alice'),requestedAt:'client-time'}));
+  await assertSucceeds(setDoc(doc(alice,'accountDeletionRequests','alice'),request('alice')));
+  await assertFails(updateDoc(doc(alice,'accountDeletionRequests','alice'),{status:'completed'}));
+  await assertFails(getDoc(doc(bob,'accountDeletionRequests','alice')));
+  await assertSucceeds(getDoc(doc(alice,'accountDeletionRequests','alice')));
+});
+ruleTest('pending deletion blocks stale tokens from recreating data and creating new provider requests',async()=>{
+  const alice=env.authenticatedContext('alice').firestore();
+  await env.withSecurityRulesDisabled(ctx=>setDoc(doc(ctx.firestore(),'accountDeletionRequests','alice'),{uid:'alice',status:'pending'}));
+  await assertFails(setDoc(doc(alice,'users','alice','settings','preferences'),{currency:'LKR'}));
+  await assertFails(setDoc(doc(alice,'users','alice','likes','a'),{itemId:'a'}));
+  await assertFails(setDoc(doc(alice,'bookings','new'),{userId:'alice',kind:'stay',offerId:'hotel',partnerId:'hotel-owner',status:'Pending'}));
 });

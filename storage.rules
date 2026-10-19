@@ -1,10 +1,14 @@
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
+    function activeOwner(uid) {
+      return request.auth != null && request.auth.uid == uid
+        && !firestore.exists(/databases/(default)/documents/accountDeletionRequests/$(uid));
+    }
     match /partners/{uid}/listings/{file} {
       allow read: if true;
-      allow create, update: if request.auth != null && request.auth.uid == uid && request.resource.size < 10 * 1024 * 1024 && request.resource.contentType.matches('image/.*');
-      allow delete: if request.auth != null && request.auth.uid == uid;
+      allow create, update: if activeOwner(uid) && request.resource.size < 10 * 1024 * 1024 && request.resource.contentType.matches('image/.*');
+      allow delete: if activeOwner(uid);
     }
     match /catalog/seed/{file} { allow read: if true; allow write: if false; }
   }

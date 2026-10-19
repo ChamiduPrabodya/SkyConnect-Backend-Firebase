@@ -128,6 +128,9 @@ export class NotificationWorker {
     return rows.length;
   }
   async tick() {
+    if ((await this.store.get('notificationWorker/config'))?.data.mode === 'functions') {
+      return { skipped: 'cloud-functions-mode' };
+    }
     const leaseTime = await this.lease();
     if (!leaseTime) return { skipped: 'another-worker-holds-lease' };
     const stored = await this.store.get('notificationWorker/state');

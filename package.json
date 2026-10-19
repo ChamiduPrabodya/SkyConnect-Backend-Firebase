@@ -11,6 +11,9 @@
     "seed:no-images": "node scripts/seed-without-images.mjs --apply",
     "admin": "node scripts/admin.mjs",
     "notifications:worker": "node --env-file-if-exists=.env.notifications.local scripts/notifications-worker.mjs --firebase-cli",
+    "functions:check": "npm --prefix functions run check",
+    "test:functions": "firebase emulators:exec --only firestore --project demo-skyconnect \"node --test --test-concurrency=1 functions/test/*.test.mjs\"",
+    "test:triggers": "node scripts/test-triggers.mjs",
     "test": "node --test tests/*.test.mjs",
     "test:rules": "firebase emulators:exec --only firestore --project demo-skyconnect \"node --test tests/rules.test.mjs\""
   },

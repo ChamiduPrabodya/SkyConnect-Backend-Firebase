@@ -1,10 +1,15 @@
 # SkyConnect Firestore backend
 
-This folder is separate from the three frontend projects. It owns the database rules, indexes, Storage media rules, migration data/assets, administrator provisioning, and the Spark-compatible FCM notification worker. See [NOTIFICATIONS.md](NOTIFICATIONS.md) for sender setup and remaining device configuration/testing. It does not implement Cloud Functions, recommendation APIs, Hosting, Analytics, Crashlytics, payment processing, or inventory guarantees.
+This folder is separate from the three frontend projects. It owns the database rules, indexes, Storage media rules, migration data/assets, administrator provisioning, and the Spark-compatible FCM notification worker. An event-driven replacement is prepared in [functions/](functions/README.md), with profile defaults and notification triggers; it is not deployed and requires Blaze for cloud deployment. See [NOTIFICATIONS.md](NOTIFICATIONS.md) for the current sender setup and remaining device configuration/testing. Recommendation APIs, Hosting, Analytics, Crashlytics, payment processing, and inventory guarantees are not implemented here.
 
 ## What changed
 
-The apps load business/catalog datasets from Firestore. `seed/source/` preserves the retired frontend dataset sources for provenance only; the apps never import them. `seed/catalog.json` is the migration input. `seed/assets/` preserves 219 referenced catalog media files. The full-media seed uploads images to Storage and stores HTTPS references. The no-image seed stores empty image fields/lists instead and does not need a bucket. Sample business records retain `isSample: true`; moving them to Firebase does not verify their accuracy or create real provider Auth accounts. Other retired samples are private archives in `legacySamples`, rather than fabricated live bookings or authenticated profiles.
+Consent recording and authenticated account/data deletion are implemented in code for the two
+mobile apps and a public web deletion route. The Spark worker and prepared Functions package
+share a deletion processor. See [PRIVACY.md](PRIVACY.md) for scope, deployment, operational
+requirements, policy-date corrections and remaining publication/legal readiness work.
+
+The apps load business/catalog datasets from Firestore. `seed/catalog.json` is the migration input. `seed/assets/` preserves 219 referenced catalog media files. The full-media seed uploads images to Storage and stores HTTPS references. The no-image seed stores empty image fields/lists instead and does not need a bucket. Sample business records retain `isSample: true`; moving them to Firebase does not verify their accuracy or create real provider Auth accounts. Other retired samples are private archives in `legacySamples`, rather than fabricated live bookings or authenticated profiles.
 
 ## Database layout
 

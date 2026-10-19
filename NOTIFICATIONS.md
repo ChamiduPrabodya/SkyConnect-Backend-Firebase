@@ -1,6 +1,6 @@
 # Notifications on Firebase Spark
 
-The three frontends register FCM tokens and read private Firestore inboxes. This separate backend runs a trusted Node worker. It uses Firestore and FCM on Spark; it does not deploy Cloud Functions or change billing. The worker must remain running on an awake computer or another host. Hosting that process is separate from Firebase's no-cost FCM delivery.
+The three frontends register FCM tokens and read private Firestore inboxes. The current sender is a trusted Node worker. It uses Firestore and FCM on Spark; it does not deploy Cloud Functions or change billing. The worker must remain running on an awake computer or another host. Hosting that process is separate from Firebase's no-cost FCM delivery. A Cloud Functions replacement is prepared locally; see [functions/README.md](functions/README.md). It requires Blaze to deploy and remains inactive until an explicit mode switch. Keep the live worker running until cutover.
 
 ## Run the sender
 
@@ -13,6 +13,12 @@ npm.cmd run notifications:worker
 ```
 
 Keep that terminal open. Stop with Ctrl+C. For one processing cycle use `npm.cmd run notifications:worker -- --once`. The script refreshes your authorized CLI token in memory and never copies it to the frontends. For a server using an authorized Application Default Credential, run `node scripts/notifications-worker.mjs` with GOOGLE_CLOUD_PROJECT and NOTIFICATION_ADMIN_UIDS set, omitting `--firebase-cli`.
+
+The updated worker also processes authenticated account-deletion requests before notification
+cycles and removes expired security receipts. Restart an existing process to load this change;
+see [PRIVACY.md](PRIVACY.md). A failed deletion remains pending and is counted in the tick log
+without stopping unrelated notification processing. Configure the public FIREBASE_STORAGE_BUCKET
+identifier for checking account-owned uploads. This does not create a bucket or enable billing.
 
 On first start the worker records a baseline of existing partners/offers/routes/bookings and sends no historical alerts. Subsequent app writes carry `notificationUpdatedAt: serverTimestamp()`. The worker queries that timestamp with a persisted cursor, compares authoritative statuses, writes inbox records, and dispatches pending pushes. Rapid changes between polls can coalesce into the latest status; this is polling, not a Firestore trigger. Direct Console writes without this timestamp are not picked up. A restart resumes the saved cursor. One worker lease prevents simultaneous senders.
 
@@ -60,7 +66,7 @@ Sign-out invalidates the platform token and removes the Firestore device binding
 
 With no opted-in devices, a notification remains in the inbox and is marked no-devices. Old inbox entries are not pushed retroactively when a device later opts in. The UI loads the latest 50 account notifications and filters them by app. Read state is preserved during concurrent delivery updates.
 
-The idle worker performs approximately eight Firestore document/query reads and one lease write per polling cycle, plus actual event/device/delivery work. These share the project's Spark quotas with the apps. Increase the polling interval if needed. No billing upgrade is automatic, and continuous availability is not provided by Spark itself.
+The idle worker performs approximately twelve Firestore document/query reads and one lease write per polling cycle, plus actual event/device/delivery work. These share the project's Spark quotas with the apps. Increase the polling interval if needed. No billing upgrade is automatic, and continuous availability is not provided by Spark itself.
 
 ## Verification
 
