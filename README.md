@@ -1,5 +1,7 @@
 # SkyConnect Firestore backend
 
+Current Sinhala explanation, every backend/AI file and remaining work: [PROJECT_GUIDE_SI.md](https://github.com/ChamiduPrabodya/TEAM-ZUNO/blob/feature/stay-and-route/PROJECT_GUIDE_SI.md). Start the local projects with root `START_SKYCONNECT.bat`; stop launcher-owned processes with `STOP_SKYCONNECT.bat`. This does not deploy Firebase resources. Older dated results below are historical. Latest local checks: 15 backend unit tests passed; 13 Rules tests require the emulator, whose current CLI requires Java 21+ (this computer currently has Java 17).
+
 This folder is separate from the three frontend projects. It owns the database rules, indexes, Storage media rules, migration data/assets, administrator provisioning, and the Spark-compatible FCM notification worker. An event-driven replacement is prepared in [functions/](functions/README.md), with profile defaults and notification triggers; it is not deployed and requires Blaze for cloud deployment. See [NOTIFICATIONS.md](NOTIFICATIONS.md) for the current sender setup and remaining device configuration/testing. Recommendation APIs, Hosting, Analytics, Crashlytics, payment processing, and inventory guarantees are not implemented here.
 
 ## What changed
@@ -105,3 +107,16 @@ At the last Storage check, the project had no Storage bucket and billing was dis
 ## Local emulator app configuration
 
 `EXPO_PUBLIC_FIREBASE_USE_EMULATORS=true` connects a mobile app to Auth 9099, Firestore 8080 and Storage 9199. Set EXPO_PUBLIC_FIREBASE_EMULATOR_HOST to the computer's LAN address on a physical phone. Admin supports VITE_FIREBASE_USE_EMULATORS and VITE_FIREBASE_EMULATOR_HOST. Use a demo project configuration for emulator work. Start the corresponding emulators before opening the apps.
+
+
+## Shared app connections
+
+This section replaces the three identical frontend FIRESTORE.md copies. The current sibling projects are SkyConnect-user-app, SkyConnect-partner-app and SkyConnect-SL-Admin-Web-App.
+
+All three clients use Firebase Authentication and Firestore. Traveler catalog/reference stores and the partner reference store are populated from Firebase snapshots. Signed-in preferences, saved plans, likes, inboxes and related settings are account-scoped. Local draft/boot preferences are separate from the shared cloud database.
+
+Client configuration, publication statuses, ownership fields, deployed Rules and indexes must agree. Current source is not proof of the deployed state. Use the deployment checks and a controlled multi-account workflow before release. Sample catalog records remain samples; estimates are not collected payments or issued tickets.
+
+The local worker processes notification and account-deletion queues with trusted credentials. The Functions alternative is prepared separately. Browser/native device delivery needs its own configuration and verification. Native Firebase messaging requires a custom native build rather than the stock Expo Go client. See NOTIFICATIONS.md and PRIVACY.md for operational details.
+
+Use the root START_SKYCONNECT.bat for local app/API startup; it does not seed data, deploy rules/functions, provision admins or enable billing. See ../PROJECT_GUIDE_SI.md for the current full explanation. Older dated deployment statements above remain historical records, not a fresh deployment check.

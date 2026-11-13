@@ -14,9 +14,9 @@ const jobs = {
     const fields = { API_KEY:'apiKey', AUTH_DOMAIN:'authDomain', PROJECT_ID:'projectId', STORAGE_BUCKET:'storageBucket', MESSAGING_SENDER_ID:'messagingSenderId', APP_ID:'appId' };
     const clients = {};
     for (const [name, file, prefix] of [
-      ['admin', '../../skyconnect-admin-web/.env', 'VITE_FIREBASE_'],
-      ['partner', '../../SkyConnect-partner-app-feature-airline-part/.env', 'EXPO_PUBLIC_FIREBASE_'],
-      ['traveler', '../../skyconnect user app/SkyConnect-user-app/.env', 'EXPO_PUBLIC_FIREBASE_'],
+      ['admin', '../../SkyConnect-SL-Admin-Web-App/.env', 'VITE_FIREBASE_'],
+      ['partner', '../../SkyConnect-partner-app/.env', 'EXPO_PUBLIC_FIREBASE_'],
+      ['traveler', '../../SkyConnect-user-app/.env', 'EXPO_PUBLIC_FIREBASE_'],
     ]) {
       const contents = await fs.readFile(new URL(file, import.meta.url), 'utf8');
       const env = Object.fromEntries(contents.split(/\r?\n/).filter(line => line.trim() && !line.trim().startsWith('#')).map(line => {

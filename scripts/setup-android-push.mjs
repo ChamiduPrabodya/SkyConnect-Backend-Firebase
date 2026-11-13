@@ -4,8 +4,8 @@ const projectId = process.env.GOOGLE_CLOUD_PROJECT;
 if (!projectId) throw new Error('Set GOOGLE_CLOUD_PROJECT.');
 const api = 'https://firebase.googleapis.com/v1beta1/';
 const targets = [
-  { folder:'../../SkyConnect-partner-app-feature-airline-part/', packageName:'com.skyconnect.airline.partner', displayName:'SkyConnect Partner Android' },
-  { folder:'../../skyconnect user app/SkyConnect-user-app/', packageName:'com.skyconnectsl.demo', displayName:'SkyConnect Traveler Android' },
+  { folder:'../../SkyConnect-partner-app/', packageName:'com.skyconnect.airline.partner', displayName:'SkyConnect Partner Android' },
+  { folder:'../../SkyConnect-user-app/', packageName:'com.skyconnectsl.demo', displayName:'SkyConnect Traveler Android' },
 ];
 let { apps = [] } = await cloudRequest(`${api}projects/${projectId}/androidApps`);
 for (const target of targets) {
