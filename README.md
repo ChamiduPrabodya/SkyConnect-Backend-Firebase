@@ -15,6 +15,8 @@
   <img src="https://img.shields.io/badge/Status-In%20development-F2B544" alt="In development" />
 </p>
 
+<p align="center"><a href="https://github.com/ChamiduPrabodya/SkyConnect-Backend-Firebase/actions/workflows/ci.yml"><img src="https://github.com/ChamiduPrabodya/SkyConnect-Backend-Firebase/actions/workflows/ci.yml/badge.svg?branch=main" alt="Firebase CI" /></a></p>
+
 <p align="center">
   <a href="#overview">Overview</a> &middot;
   <a href="#architecture">Architecture</a> &middot;
@@ -207,6 +209,16 @@ SkyConnect-Backend-Firebase/
 |-- NOTIFICATIONS.md            # Worker/device setup and cutover
 `-- PRIVACY.md                  # Consent/deletion operations
 ```
+
+## Continuous integration
+
+[**Firebase CI - view workflow runs**](https://github.com/ChamiduPrabodya/SkyConnect-Backend-Firebase/actions/workflows/ci.yml)
+
+The workflow runs for pull requests, pushes to `main` and manual **Run workflow** requests. Data/notification unit tests, create-only seed previews, Java 21 demo-project Rules/Functions tests and trigger integration.
+
+CI uses read-only repository permissions and requires no production Firebase credentials or Vertex keys. New runs cancel older runs for the same branch. Failed steps remain failed and their logs are available in the Actions tab. Emulator diagnostic logs are retained briefly when a job fails; no production data is seeded or deployed.
+
+This workflow does not deploy services, publish mobile apps or change branch protection. Requiring a successful check before merge is a separate GitHub repository setting. Failure email delivery follows each user's GitHub Actions notification settings; it does not broadcast email to every collaborator.
 
 ## Roadmap
 

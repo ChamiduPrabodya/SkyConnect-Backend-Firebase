@@ -1,0 +1,89 @@
+name: Firebase CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CI: 'true'
+  GCLOUD_PROJECT: demo-skyconnect
+  GOOGLE_CLOUD_PROJECT: demo-skyconnect
+  FIREBASE_CLI_DISABLE_UPDATE_CHECK: 'true'
+
+jobs:
+  unit-tests:
+    name: Firebase unit tests and seed previews
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            functions/package-lock.json
+      - name: Install locked backend dependencies
+        run: npm ci
+      - name: Install locked Functions dependencies
+        run: npm --prefix functions ci
+      - name: Check Functions source syntax
+        run: npm run functions:check
+      - name: Run data and notification unit tests
+        run: npm test
+      - name: Validate create-only migration previews without applying data
+        run: |
+          npm run seed:preview
+          npm run seed:references:preview
+          npm run seed:no-images:preview
+
+  emulator-tests:
+    name: Firebase Rules and Functions emulator tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            functions/package-lock.json
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Install locked backend dependencies
+        run: npm ci
+      - name: Install locked Functions dependencies
+        run: npm --prefix functions ci
+      - name: Run Rules and Functions tests against local demo Firestore
+        run: npx --no-install firebase emulators:exec --only firestore --project demo-skyconnect "node --test --test-concurrency=1 tests/*.test.mjs functions/test/*.test.mjs"
+      - name: Verify Auth and Firestore trigger integration
+        run: npm run test:triggers
+      - name: Save emulator diagnostics on failure
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: firebase-emulator-diagnostics
+          path: |
+            firebase-debug.log
+            firestore-debug.log
+            functions/firebase-debug.log
+          if-no-files-found: ignore
+          retention-days: 3
