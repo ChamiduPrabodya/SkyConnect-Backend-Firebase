@@ -7,7 +7,7 @@ import { NotificationWorker } from '../notifications/worker.mjs';
 import { createPrivacyRuntime } from '../functions/src/privacy-runtime.mjs';
 
 const projectId = process.env.GOOGLE_CLOUD_PROJECT;
-if (!projectId) throw new Error('Set GOOGLE_CLOUD_PROJECT. See NOTIFICATIONS.md.');
+if (!projectId) throw new Error('Set GOOGLE_CLOUD_PROJECT before starting the worker.');
 const useCli = process.argv.includes('--firebase-cli');
 const app = initializeApp({ projectId, credential: useCli ? cliCredential : applicationDefault() });
 const credential = app.options.credential;
