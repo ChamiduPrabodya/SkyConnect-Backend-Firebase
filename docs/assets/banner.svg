@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="340" viewBox="0 0 1200 340" role="img" aria-labelledby="title desc">
+  <title id="title">SkyConnect Firebase — Trusted data. Connected experiences</title>
+  <desc id="desc">SkyConnect Firebase - Trusted data. Connected experiences.</desc>
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#081d30"/><stop offset="1" stop-color="#185c69"/></linearGradient>
+    <linearGradient id="route" x2="1" y2="1"><stop stop-color="#72e8d2"/><stop offset="1" stop-color="#56b8fa"/></linearGradient>
+    <clipPath id="cardBounds"><rect width="1200" height="340" rx="24"/></clipPath>
+  </defs>
+  <g clip-path="url(#cardBounds)">
+  <rect width="1200" height="340" rx="24" fill="url(#bg)"/>
+  <circle cx="1125" cy="50" r="190" fill="#72e8d2" opacity=".045"/>
+  <circle cx="1105" cy="340" r="205" fill="#56b8fa" opacity=".06"/>
+  <text x="64" y="79" fill="#72e8d2" font-family="Arial,sans-serif" font-size="15" font-weight="700" letter-spacing="4">THE SKYCONNECT SL PROJECT</text>
+  <text x="60" y="159" fill="#fff" font-family="Arial,sans-serif" font-size="54" font-weight="700">SkyConnect Firebase</text>
+  <text x="64" y="207" fill="#d0e6ed" font-family="Arial,sans-serif" font-size="25">Trusted data. Connected experiences.</text>
+  <text x="64" y="274" fill="#9bc2d0" font-family="Arial,sans-serif" font-size="17">Node.js  /  Firestore  /  Authentication  /  FCM</text>
+  <path d="M860 223 C805 170 883 77 948 122 S1075 206 1081 114" fill="none" stroke="url(#route)" stroke-width="4" stroke-dasharray="9 10"/>
+  <circle cx="860" cy="223" r="10" fill="#72e8d2"/>
+  <circle cx="948" cy="122" r="10" fill="#72e8d2"/>
+  <circle cx="1081" cy="114" r="10" fill="#56b8fa"/>
+  <text x="816" y="261" fill="#c7e6ed" font-family="Arial,sans-serif" font-size="14">CONNECT</text>
+  <text x="916" y="92" fill="#c7e6ed" font-family="Arial,sans-serif" font-size="14">PROTECT</text>
+  <text x="1058" y="83" fill="#c7e6ed" font-family="Arial,sans-serif" font-size="14">PROCESS</text>
+  </g>
+</svg>
