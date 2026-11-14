@@ -48,6 +48,7 @@ jobs:
           npm run seed:preview
           npm run seed:references:preview
           npm run seed:no-images:preview
+          npm run media:preview
 
   emulator-tests:
     name: Firebase Rules and Functions emulator tests

@@ -5,6 +5,17 @@ import { cliCredential, cloudRequest } from './cli-session.mjs';
 import { NotificationStore } from '../notifications/store.mjs';
 import { NotificationWorker } from '../notifications/worker.mjs';
 import { createPrivacyRuntime } from '../functions/src/privacy-runtime.mjs';
+import { cloudinaryConfig } from '../functions/src/cloudinary.mjs';
+import { readFile } from 'node:fs/promises';
+import { parseEnv } from 'node:util';
+
+// Optional local credential file: copy only media keys, never AI keys into worker config.
+const mediaEnvFile = process.argv.find(arg => arg.startsWith('--media-env='))?.slice('--media-env='.length);
+const mediaEnv = mediaEnvFile ? parseEnv(await readFile(mediaEnvFile, 'utf8')) : {};
+const mediaConfig = Object.fromEntries(['CLOUDINARY_CLOUD_NAME', 'CLOUDINARY_API_KEY', 'CLOUDINARY_API_SECRET']
+  .map(key => [key, process.env[key] || mediaEnv[key]]));
+const hasCloudinary = /^[A-Za-z0-9_-]+$/.test(mediaConfig.CLOUDINARY_CLOUD_NAME || '') && mediaConfig.CLOUDINARY_API_KEY && mediaConfig.CLOUDINARY_API_SECRET;
+const mediaProvider = process.env.PUBLIC_MEDIA_PROVIDER || (hasCloudinary ? 'cloudinary' : 'firebase');
 
 const projectId = process.env.GOOGLE_CLOUD_PROJECT;
 if (!projectId) throw new Error('Set GOOGLE_CLOUD_PROJECT before starting the worker.');
@@ -24,7 +35,9 @@ const worker = new NotificationWorker({
   send: message => getMessaging(app).send(message),
   adminUids: (process.env.NOTIFICATION_ADMIN_UIDS || '').split(',').map(s => s.trim()).filter(Boolean),
 });
-const privacy = createPrivacyRuntime({ projectId, request, auth: getAuth(app), storageBucket: process.env.FIREBASE_STORAGE_BUCKET });
+const privacy = createPrivacyRuntime({ projectId, request, auth: getAuth(app),
+  storageBucket: mediaProvider === 'cloudinary' ? process.env.LEGACY_FIREBASE_STORAGE_BUCKET : process.env.FIREBASE_STORAGE_BUCKET,
+  mediaProvider, cloudinary: mediaProvider === 'cloudinary' ? cloudinaryConfig(mediaConfig) : undefined });
 const interval = Number(process.env.NOTIFICATION_POLL_MS || 60000);
 if (!Number.isSafeInteger(interval) || interval < 60000 || interval > 43200000) throw new Error('NOTIFICATION_POLL_MS must be an integer between 60000 and 43200000.');
 console.log(JSON.stringify({ event: 'worker-start', projectId, pollMs: interval }));

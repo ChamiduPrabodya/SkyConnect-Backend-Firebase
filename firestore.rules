@@ -11,6 +11,16 @@ service cloud.firestore {
     function validNotificationTime() {
       return !request.resource.data.keys().hasAny(['notificationUpdatedAt']) || request.resource.data.notificationUpdatedAt == request.time || (resource != null && request.resource.data.notificationUpdatedAt == resource.data.get('notificationUpdatedAt', null));
     }
+    function validPartnerPhotos() {
+      let changed = request.resource.data.diff(resource.data).affectedKeys();
+      let avatar = request.resource.data.get('avatar', null);
+      let emoji = request.resource.data.get('avatarEmoji', '');
+      let logo = request.resource.data.get('logo', '');
+      return (!changed.hasAny(['avatar']) || avatar == null ||
+          (avatar is string && avatar.size() < 2048 && avatar.matches('^https://res[.]cloudinary[.]com/[A-Za-z0-9_-]+/image/upload/.*$')))
+        && (!changed.hasAny(['avatarEmoji']) || (emoji is string && emoji.size() <= 16))
+        && (!changed.hasAny(['logo']) || (logo is string && logo.size() <= 16));
+    }
     function validConsent(value) {
       return value is map && value.keys().hasOnly(['agreed','timestamp','version','scopes'])
         && value.agreed is bool && value.timestamp == request.time && value.version == '1.0'
@@ -79,7 +89,7 @@ service cloud.firestore {
       allow create: if owner(id) && consentReceipt(id) && request.resource.data.pdpaConsent.agreed == true && validNotificationTime() && request.resource.data.uid == id && request.resource.data.id == id && request.resource.data.status == 'Pending' && request.resource.data.verified == false && request.resource.data.type in ['Tourism','Airline'];
       allow update: if (admin() || owner(id))
         && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['pdpaConsent','pdpaConsentRecordId']) || (owner(id) && consentReceipt(id)))
-        && (admin() || (validNotificationTime() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name','phone','category','city','location','country','headquarters','contactName','description','website','contact','iata','icao','aoc','bsp','fleet','founded','sltdaLicense','brNumber','businessType','preferences','updatedAt','notificationUpdatedAt','pdpaConsent','pdpaConsentRecordId'])));
+        && (admin() || (validPartnerPhotos() && validNotificationTime() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name','phone','category','city','location','country','headquarters','contactName','description','website','contact','avatar','avatarEmoji','logo','iata','icao','aoc','bsp','fleet','founded','sltdaLicense','brNumber','businessType','preferences','updatedAt','notificationUpdatedAt','pdpaConsent','pdpaConsentRecordId'])));
       allow delete: if admin();
     }
     match /offers/{id} {

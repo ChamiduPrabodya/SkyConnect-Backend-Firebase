@@ -42,7 +42,7 @@ It is a Firebase deployment and operations project, **not a standalone Express R
 | Shared access model | Rules for travelers, partner-owned records and administrators |
 | Administrator provisioning | Trusted script grants the `admin: true` Firebase custom claim |
 | Catalog migration | Create-only full-media, no-image and reference-data seed paths |
-| Media access | Storage Rules and preserved catalog asset manifests |
+| Media access | Cloudinary uploads/backfill, owned-photo deletion, legacy Storage Rules and asset manifests |
 | Service requests | Provider-owned requests grouped by `tripGroupId` |
 | Notification processing | Firestore inbox/device records and a trusted FCM polling worker |
 | Account deletion | Shared deletion processor used by the worker and prepared Functions package |
@@ -60,7 +60,7 @@ flowchart TD
     W[Admin website] --> A
     A --> R[Client SDK and Security Rules]
     R --> D[Cloud Firestore]
-    R --> S[Catalog media in Storage]
+    R --> S[Public catalog media in Cloudinary]
     D --> Q[Notification and deletion queues]
     Q --> K[Trusted worker or activated Functions]
     K --> F[FCM and account processing]
@@ -118,6 +118,33 @@ npm.cmd run notifications:worker
 The worker processes project queues and must remain running on an awake computer or continuously hosted process. Read [NOTIFICATIONS.md](NOTIFICATIONS.md) and [PRIVACY.md](PRIVACY.md) for device setup, operating mode and deletion scope.
 
 ## Configuration
+
+### Cloudinary photos without Firebase Storage billing
+
+Public photos can use Cloudinary **Image and Video APIs Free**, while Firebase Authentication and Firestore remain unchanged. This migration does not enable billing, create a Storage bucket, replace catalog business data, or deploy Functions.
+
+`scripts/backfill-cloudinary.mjs` validates the existing asset manifest, previews missing image fields, uploads only needed seed photos, and atomically updates existing Firestore media fields. It preserves nonempty custom URLs, prices, statuses and activity IDs; deleted documents/activities are not recreated. Before a write it saves original Firestore snapshots into ignored `backups.local/`, applies update-time preconditions, then verifies the complete records. A concurrent edit aborts the commit rather than replacing the edit. Deterministic public IDs with `overwrite=false` allow retries to reuse already uploaded photos. Original local assets stay available until a verified cutover.
+
+From this repository, using Node.js 22+:
+
+```powershell
+# Offline preview: no credentials or network; no writes.
+npm.cmd run media:preview
+
+# Load backend-only credentials. The sibling path is a local-workspace example;
+# use any private env file with the same CLOUDINARY_* and FIREBASE_PROJECT_ID keys.
+node --env-file=../SkyConnect-AI-Backend/.env scripts/backfill-cloudinary.mjs --check-live
+
+# Upload photos, back up affected documents, then apply media-only patches.
+# Run only against the intended project after reviewing the live preview.
+node --env-file=../SkyConnect-AI-Backend/.env scripts/backfill-cloudinary.mjs --apply
+```
+
+The live steps use the developer's existing Firebase CLI login. `GOOGLE_CLOUD_PROJECT` overrides `FIREBASE_PROJECT_ID`; select the intended project explicitly. Cloudinary secrets must never be put into `EXPO_PUBLIC_*`, `VITE_*`, commits or logs.
+
+Partner/Admin uploads use the protected media endpoint in the existing FastAPI service. For local account-photo deletion, start the worker with `--media-env=<private-env-file>`; it reads only the three `CLOUDINARY_*` fields. The workspace launcher already supplies that option. The worker selects Cloudinary when complete credentials exist, or use `PUBLIC_MEDIA_PROVIDER=cloudinary` explicitly. The deletion adapter removes only `skyconnect/partners/<sha256(uid)>/` and follows pagination. Missing credentials or a provider error prevent the deletion processor from claiming completion. Shared catalog images are not account-owned photos. If legacy Firebase Storage photos actually exist, configure `LEGACY_FIREBASE_STORAGE_BUCKET` as well. A deployed Functions runtime needs its own server-only Cloudinary configuration and `PUBLIC_MEDIA_PROVIDER`; the local sibling env file is not deployed.
+
+Photo upload, Firestore record save and deletion span separate services. Cancelled forms or failed saves may leave unused public photos; periodic orphan cleanup is still future work. Free Cloudinary credits have limits; no paid upgrade is performed by these scripts.
 
 Use [.env.notifications.example](.env.notifications.example) for worker configuration. Seed/admin scripts also read explicitly supplied environment variables.
 

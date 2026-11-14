@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "media:preview": "node scripts/backfill-cloudinary.mjs",
     "seed:preview": "node scripts/seed.mjs",
     "seed": "node scripts/seed.mjs --apply",
     "seed:references:preview": "node scripts/seed-references.mjs",

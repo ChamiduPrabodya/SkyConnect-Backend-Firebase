@@ -8,6 +8,7 @@ import { info } from 'firebase-functions/logger';
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
 import { onSchedule } from 'firebase-functions/v2/scheduler';
 import { createPrivacyRuntime } from './privacy-runtime.mjs';
+import { cloudinaryConfig } from './cloudinary.mjs';
 import { requireDeletionIdentity } from './account-deletion.mjs';
 import * as functionsV1 from 'firebase-functions/v1';
 import { createHandlers } from './handlers.mjs';
@@ -73,8 +74,10 @@ function privacy() {
   const emulatorHost = process.env.FIRESTORE_EMULATOR_HOST;
   if (emulatorHost && !/^(127\.0\.0\.1|localhost):\d+$/.test(emulatorHost)) throw new Error('Use a localhost Firestore emulator.');
   const config = JSON.parse(process.env.FIREBASE_CONFIG || '{}');
+  const mediaProvider = process.env.PUBLIC_MEDIA_PROVIDER || 'firebase';
   return createPrivacyRuntime({ projectId: process.env.GCLOUD_PROJECT || config.projectId,
-    auth: getAuth(), storageBucket: config.storageBucket || process.env.FIREBASE_STORAGE_BUCKET,
+    auth: getAuth(), storageBucket: mediaProvider === 'cloudinary' ? process.env.LEGACY_FIREBASE_STORAGE_BUCKET : config.storageBucket || process.env.FIREBASE_STORAGE_BUCKET,
+    mediaProvider, cloudinary: mediaProvider === 'cloudinary' ? cloudinaryConfig() : undefined,
     endpoint: emulatorHost ? `http://${emulatorHost}/v1` : undefined,
     request: async (url, options = {}) => {
       const token = emulatorHost ? 'owner' : (await getApp().options.credential.getAccessToken()).access_token;

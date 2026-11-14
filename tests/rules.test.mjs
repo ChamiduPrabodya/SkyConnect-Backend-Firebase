@@ -21,6 +21,17 @@ beforeEach(async () => {
   });
 });
 const ruleTest = (name, fn) => test(name, { skip: !enabled }, fn);
+ruleTest('partner photos accept hosted Cloudinary URLs, reject local files and retain ownership and approval protection', async () => {
+  const owner = env.authenticatedContext('hotel-owner').firestore();
+  const other = env.authenticatedContext('other').firestore();
+  const profile = doc(owner, 'partners', 'hotel-owner');
+  await assertSucceeds(updateDoc(profile, { avatar: 'https://res.cloudinary.com/test/image/upload/photo.webp', avatarEmoji: 'HI', logo: 'HI', notificationUpdatedAt: serverTimestamp() }));
+  await assertFails(updateDoc(profile, { avatar: 'file:///private/photo.jpg' }));
+  await assertFails(updateDoc(profile, { avatar: 'data:image/png;base64,private' }));
+  await assertFails(updateDoc(profile, { avatarEmoji: 'x'.repeat(17) }));
+  await assertFails(updateDoc(profile, { avatar: 'https://res.cloudinary.com/test/image/upload/photo.webp', status: 'Rejected' }));
+  await assertFails(updateDoc(doc(other, 'partners', 'hotel-owner'), { avatar: null }));
+});
 ruleTest('public catalog reads work; private records and pending listings are protected', async () => {
   const guest = env.unauthenticatedContext().firestore(), admin = env.authenticatedContext('admin',{admin:true}).firestore();
   await assertSucceeds(getDocs(query(collection(guest,'offers'), where('status','==','Published'))));

@@ -1,7 +1,8 @@
 import { NotificationStore } from './rest-store.mjs';
 import { AccountDeletionProcessor } from './account-deletion.mjs';
+import { deleteCloudinaryPartnerPhotos } from './cloudinary.mjs';
 
-export function createPrivacyRuntime({ projectId, request, auth, storageBucket, endpoint }) {
+export function createPrivacyRuntime({ projectId, request, auth, storageBucket, endpoint, mediaProvider = 'firebase', cloudinary }) {
   const store = new NotificationStore(projectId, request, endpoint);
   const ignoreMissingAuth = async operation => {
     try { await operation(); } catch (error) { if (error.code !== 'auth/user-not-found') throw error; }
@@ -14,6 +15,11 @@ export function createPrivacyRuntime({ projectId, request, auth, storageBucket, 
     deleteAuth: uid => ignoreMissingAuth(() => auth.deleteUser(uid)),
     deleteMedia: async (uid, renew) => {
       if (endpoint) return; // Local emulator: media adapter is tested separately.
+      if (mediaProvider === 'cloudinary') {
+        if (!cloudinary) throw new Error('Configure Cloudinary credentials before processing photo deletion.');
+        await deleteCloudinaryPartnerPhotos(uid, renew, cloudinary);
+        if (!storageBucket) return;
+      } else if (mediaProvider !== 'firebase') throw new Error('Unsupported public media provider.');
       if (!storageBucket) throw new Error('Configure the project Storage bucket name for deletion checks.');
       for (const prefix of [`partners/${uid}/`, `users/${uid}/`]) {
         // Repeatedly drain the first page, preserving unrelated object prefixes.
