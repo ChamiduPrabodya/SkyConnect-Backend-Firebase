@@ -1,5 +1,6 @@
 import test, { before, after, beforeEach } from 'node:test';
 import fs from 'node:fs';
+import assert from 'node:assert/strict';
 import { initializeTestEnvironment, assertFails, assertSucceeds } from '@firebase/rules-unit-testing';
 import { doc, setDoc, getDoc, updateDoc, collection, collectionGroup, getDocs, query, where, serverTimestamp, Timestamp, writeBatch } from 'firebase/firestore';
 let env;
@@ -21,6 +22,34 @@ beforeEach(async () => {
   });
 });
 const ruleTest = (name, fn) => test(name, { skip: !enabled }, fn);
+ruleTest('listing revisions remain private, retain ownership and cannot publish themselves', async () => {
+  const owner = env.authenticatedContext('hotel-owner').firestore();
+  const other = env.authenticatedContext('other').firestore();
+  const guest = env.unauthenticatedContext().firestore();
+  const admin = env.authenticatedContext('admin', {admin:true}).firestore();
+  const revision = { targetCollection:'offers',targetId:'hotel',ownerId:'hotel-owner',status:'Pending',baseVersion:'',createdAt:'2026-11-14',submittedAt:'2026-11-14',notificationUpdatedAt:serverTimestamp(),payload:{partnerId:'hotel-owner',title:'Private new photos',status:'Pending',verified:false} };
+  await assertSucceeds(setDoc(doc(owner,'listingRevisions','offers_hotel'),revision));
+  await assertSucceeds(getDocs(query(collection(owner,'listingRevisions'),where('ownerId','==','hotel-owner'))));
+  await assertFails(getDoc(doc(guest,'listingRevisions','offers_hotel')));
+  await assertFails(getDoc(doc(other,'listingRevisions','offers_hotel')));
+  await assertFails(updateDoc(doc(owner,'listingRevisions','offers_hotel'),{status:'Approved'}));
+  await assertFails(setDoc(doc(other,'listingRevisions','offers_hotel'),{...revision,ownerId:'other'}));
+  assert.equal((await getDoc(doc(guest,'offers','hotel'))).data().title,'Hotel');
+  const batch=writeBatch(admin);
+  batch.update(doc(admin,'offers','hotel'),{title:'Reviewed photos',status:'Published'});
+  batch.update(doc(admin,'listingRevisions','offers_hotel'),{status:'Approved'});
+  await assertSucceeds(batch.commit());
+  assert.equal((await getDoc(doc(guest,'offers','hotel'))).data().title,'Reviewed photos');
+});
+ruleTest('airline revisions cannot take another route or mutate a published schedule', async () => {
+  const airline=env.authenticatedContext('airline-owner').firestore();
+  const revision={targetCollection:'routes',targetId:'flight',ownerId:'airline-owner',status:'Pending',baseVersion:'',createdAt:'2026-11-14',submittedAt:'2026-11-14',payload:{airlineId:'airline-owner',status:'pending',images:['https://res.cloudinary.com/unit/image/upload/cabin.webp']}};
+  await assertSucceeds(setDoc(doc(airline,'listingRevisions','routes_flight'),revision));
+  await assertFails(setDoc(doc(airline,'listingRevisions','routes_flight'),{...revision,payload:{...revision.payload,airlineId:'another'}}));
+  await assertFails(setDoc(doc(airline,'listingRevisions','routes_wrong-id'),revision));
+  await assertFails(updateDoc(doc(airline,'routes','flight'),{status:'pending',images:['https://example.com/unreviewed.jpg']}));
+  await assertSucceeds(updateDoc(doc(airline,'routes','flight'),{status:'paused',updatedAt:'2026-11-14'}));
+});
 ruleTest('partner photos accept hosted Cloudinary URLs, reject local files and retain ownership and approval protection', async () => {
   const owner = env.authenticatedContext('hotel-owner').firestore();
   const other = env.authenticatedContext('other').firestore();
@@ -64,7 +93,7 @@ ruleTest('partners cannot self-approve or overwrite other providers listings', a
   await env.withSecurityRulesDisabled(ctx => updateDoc(doc(ctx.firestore(),'partners','hotel-owner'),{status:'Pending',verified:false}));
   await assertFails(updateDoc(doc(owner,'partners','hotel-owner'),{status:'Approved'}));
   await assertFails(updateDoc(doc(owner,'offers','hotel'),{status:'Published',title:'Changed'}));
-  await assertSucceeds(updateDoc(doc(owner,'offers','hotel'),{status:'Pending',verified:false,title:'Changed'}));
+  await assertFails(updateDoc(doc(owner,'offers','hotel'),{status:'Pending',verified:false,title:'Changed'}));
   const other = env.authenticatedContext('other').firestore();
   await assertFails(updateDoc(doc(other,'offers','hotel'),{title:'Stolen',status:'Pending',verified:false}));
 });
@@ -83,7 +112,7 @@ ruleTest('booking links are checked and only assigned providers can confirm', as
 ruleTest('airline route changes require approval and retain ownership', async () => {
   const airline = env.authenticatedContext('airline-owner').firestore();
   await assertFails(updateDoc(doc(airline,'routes','flight'),{airlineId:'other',status:'pending'}));
-  await assertSucceeds(updateDoc(doc(airline,'routes','flight'),{flightNo:'SC123',status:'pending'}));
+  await assertFails(updateDoc(doc(airline,'routes','flight'),{flightNo:'SC123',status:'pending'}));
   await assertFails(updateDoc(doc(airline,'routes','flight'),{status:'approved'}));
 });
 ruleTest('admins see all trips; airline and cabana owners can read only their assigned requests after submission', async () => {

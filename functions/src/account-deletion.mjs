@@ -79,6 +79,7 @@ export class AccountDeletionProcessor {
       for (const [collection, field] of [['offers', 'partnerId'], ['routes', 'airlineId'], ['packages', 'partnerId'], ['flights', 'airlineId']]) {
         await matching(collection, field, uid);
       }
+      await matching('listingRevisions', 'ownerId', uid);
       await matching('notificationRequests', 'uid', uid);
       await matching('notificationRequests', 'createdBy', uid);
       await matching('notifications', 'uid', uid, true);

@@ -95,14 +95,36 @@ service cloud.firestore {
     match /offers/{id} {
       allow read: if admin() || ownPartner(resource.data) || resource.data.status == 'Published';
       allow create: if admin() || (validNotificationTime() && ownPartner(request.resource.data) && partnerType('Tourism') && request.resource.data.status == 'Pending' && request.resource.data.verified == false);
-      allow update: if admin() || (validNotificationTime() && ownPartner(resource.data) && request.resource.data.partnerId == resource.data.partnerId && request.resource.data.status == 'Pending' && request.resource.data.verified == false);
+      allow update: if admin() || (resource.data.status != 'Published' && validNotificationTime() && ownPartner(resource.data) && request.resource.data.partnerId == resource.data.partnerId && request.resource.data.status == 'Pending' && request.resource.data.verified == false);
       allow delete: if admin() || ownPartner(resource.data);
     }
     match /routes/{id} {
       allow read: if admin() || ownAirline(resource.data) || resource.data.status == 'approved';
       allow create: if admin() || (validNotificationTime() && ownAirline(request.resource.data) && partnerType('Airline') && request.resource.data.status == 'pending');
-      allow update: if admin() || (validNotificationTime() && ownAirline(resource.data) && request.resource.data.airlineId == resource.data.airlineId && (request.resource.data.status == 'pending' || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status','updatedAt','notificationUpdatedAt']) && resource.data.status == 'approved' && request.resource.data.status == 'paused')));
+      allow update: if admin() || (validNotificationTime() && ownAirline(resource.data) && request.resource.data.airlineId == resource.data.airlineId && ((!(resource.data.status in ['approved','paused']) && request.resource.data.status == 'pending') || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status','updatedAt','notificationUpdatedAt']) && resource.data.status == 'approved' && request.resource.data.status == 'paused')));
       allow delete: if admin() || ownAirline(resource.data);
+    }
+    match /listingRevisions/{id} {
+      function validRevision() {
+        let data = request.resource.data;
+        let target = get(/databases/$(database)/documents/$(data.targetCollection)/$(data.targetId)).data;
+        return data.keys().hasOnly(['targetCollection','targetId','ownerId','status','baseVersion','payload','submittedAt','createdAt','notificationUpdatedAt'])
+          && data.targetCollection in ['offers','routes']
+          && data.targetId is string && id == data.targetCollection + '_' + data.targetId
+          && data.payload is map && data.baseVersion is string && data.submittedAt is string
+          && data.ownerId == request.auth.uid && data.status == 'Pending'
+          && (data.targetCollection == 'offers'
+            ? ownPartner(target) && partnerType('Tourism') && data.payload.partnerId == target.partnerId && data.payload.status == 'Pending' && data.payload.verified == false
+            : ownAirline(target) && partnerType('Airline') && data.payload.airlineId == target.airlineId && data.payload.status == 'pending')
+          && validNotificationTime();
+      }
+      allow read: if admin() || owner(resource.data.ownerId);
+      allow create: if admin() || (signedIn() && validRevision());
+      allow update: if admin() || (owner(resource.data.ownerId) && validRevision()
+        && request.resource.data.ownerId == resource.data.ownerId
+        && request.resource.data.targetId == resource.data.targetId
+        && request.resource.data.targetCollection == resource.data.targetCollection);
+      allow delete: if admin() || owner(resource.data.ownerId);
     }
     match /destinations/{id} { allow read: if admin() || resource.data.status == 'Published'; allow write: if admin(); }
     match /packages/{id} { allow read: if admin() || resource.data.status == 'Published'; allow write: if admin(); }
@@ -114,7 +136,7 @@ service cloud.firestore {
       let flight = data.kind == 'flight';
       let bundle = data.kind == 'package';
       let itemId = flight ? data.routeId : data.offerId;
-      let item = flight ? (exists(/databases/$(database)/documents/routes/$(itemId)) ? get(/databases/$(database)/documents/routes/$(itemId)).data : get(/databases/$(database)/documents/flights/$(itemId)).data) : (bundle ? get(/databases/$(database)/documents/packages/$(itemId)).data : get(/databases/$(database)/documents/offers/$(itemId)).data);
+      let item = flight ? (exists(/databases/$(database)/documents/routes/$(itemId)) ? get(/databases/$(database)/documents/routes/$(itemId)).data : get(/databases/$(database)/documents/flights/$(itemId)).data) : (bundle ? (exists(/databases/$(database)/documents/packages/$(itemId)) ? get(/databases/$(database)/documents/packages/$(itemId)).data : get(/databases/$(database)/documents/offers/$(itemId)).data) : get(/databases/$(database)/documents/offers/$(itemId)).data);
       return data.kind in ['flight','stay','tour','package'] && data.userId == request.auth.uid && data.status == 'Pending' && (flight ? !data.keys().hasAny(['partnerId']) : !data.keys().hasAny(['airlineId'])) && (item.status == 'Published' || (flight && item.status == 'approved')) && (flight ? data.airlineId == item.airlineId : data.partnerId == item.partnerId);
     }
     match /bookings/{id} {
