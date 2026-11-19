@@ -64,6 +64,17 @@ integration('route creation queues admin review using the lowercase route status
   assert.equal((await db.doc('routes/route').get()).get('status'), 'pending');
 });
 
+integration('private drafts stay private until submission and then queue exactly one review', async () => {
+  const draft={partnerId:'partner',status:'Draft',verified:false,title:'Work in progress'};
+  const result=await handlers.source(await event('offers','private',draft,'private-created'));
+  assert.equal(result.skipped,'private-draft');
+  assert.equal((await db.doc('offers/private').get()).get('status'),'Draft');
+  assert.equal((await inboxes('admin')).length,0);
+  const submitted=await event('offers','private',{...draft,status:'Pending'},'private-submitted',draft);
+  await handlers.source(submitted);await handlers.source(submitted);
+  assert.equal((await inboxes('admin')).length,1);
+});
+
 integration('new offers normalize to Pending and only the resulting update queues review', async () => {
   const input = await event('offers', 'offer', { partnerId: 'partner', status: 'Published', verified: true }, 'offer-created');
   const result = await handlers.source(input);

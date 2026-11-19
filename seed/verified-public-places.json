@@ -1,0 +1,40 @@
+[
+  {
+    "id": "galle",
+    "name": "Galle",
+    "description": "Explore the historic old town and fortifications. This is a public place guide, not a partner service or booking offer.",
+    "region": "Southern Province",
+    "coordinates": {"latitude": 6.0280511, "longitude": 80.2163461},
+    "sourceUrl": "https://whc.unesco.org/en/list/451",
+    "sourceName": "UNESCO World Heritage Centre",
+    "verifiedPublic": true,
+    "isSample": false,
+    "isDemo": false,
+    "catalogEligible": true,
+    "status": "Published",
+    "vibes": ["Culture & Heritage"],
+    "activities": [],
+    "image": null,
+    "rating": null,
+    "price": null
+  },
+  {
+    "id": "sigiriya",
+    "name": "Sigiriya",
+    "description": "Discover the ancient heritage site. Check visitor access and ticket details with the official operator before travel. This guide is not a booking offer.",
+    "region": "Central Province",
+    "coordinates": {"latitude": 7.95, "longitude": 80.75},
+    "sourceUrl": "https://whc.unesco.org/en/list/202/maps",
+    "sourceName": "UNESCO World Heritage Centre",
+    "verifiedPublic": true,
+    "isSample": false,
+    "isDemo": false,
+    "catalogEligible": true,
+    "status": "Published",
+    "vibes": ["Culture & Heritage"],
+    "activities": [],
+    "image": null,
+    "rating": null,
+    "price": null
+  }
+]

@@ -77,6 +77,7 @@ export async function migrateWithoutImages(projectId, catalog, request, apply = 
 if (process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url) {
   const catalog = JSON.parse(await fs.readFile(new URL('../seed/catalog.json', import.meta.url), 'utf8'));
   const apply = process.argv.includes('--apply');
+if (apply && !process.env.FIRESTORE_EMULATOR_HOST) throw new Error('Sample inventory may only be seeded into the local Firestore emulator.');
   if (apply || process.argv.includes('--check-live')) {
     const projectId = process.env.GOOGLE_CLOUD_PROJECT;
     if (!projectId) throw new Error('Set GOOGLE_CLOUD_PROJECT explicitly.');

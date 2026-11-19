@@ -7,7 +7,105 @@ service cloud.firestore {
     function owner(uid) { return signedIn() && request.auth.uid == uid; }
     function ownPartner(data) { return signedIn() && data.get('partnerId', '') == request.auth.uid; }
     function ownAirline(data) { return signedIn() && data.get('airlineId', '') == request.auth.uid; }
-    function partnerType(type) { return signedIn() && get(/databases/$(database)/documents/partners/$(request.auth.uid)).data.type == type; }
+    function partnerType(type) { let p = get(/databases/$(database)/documents/partners/$(request.auth.uid)).data; return signedIn() && p.type == type && p.status in ['Pending','Approved']; }
+    function realListing(data) { return data.get('isSample', true) == false && data.get('isDemo', false) == false; }
+    function publicListing(data) { return data.get('isSample', true) == false && data.get('catalogEligible', false) == true; }
+    function approvedProvider(uid, type) {
+      let provider = getAfter(/databases/$(database)/documents/partners/$(uid)).data;
+      return provider.type == type && provider.status == 'Approved' && provider.get('isSample', false) == false && !deleting(uid);
+    }
+    function validOffer(data) {
+      return data.get('title', '') is string && data.title.size() > 0 && data.title.size() <= 150
+        && data.get('priceUSD', 0) is number && data.priceUSD > 0
+        && data.get('coordinates', {}).get('latitude', null) is number && data.coordinates.latitude >= -90 && data.coordinates.latitude <= 90
+        && data.coordinates.get('longitude', null) is number && data.coordinates.longitude >= -180 && data.coordinates.longitude <= 180
+        && data.get('email', '').matches('^[^ @]+@[^ @]+[.][^ @]+$') && data.get('phone', '').matches('^[+][0-9]{7,15}$')
+        && (!(data.get('type','') in ['stay','hotel']) || (data.get('totalRooms',0) is int && data.totalRooms > 0 && data.get('maxGuests',0) is int && data.maxGuests > 0));
+    }
+    function validRoute(data) {
+      return data.get('flightNo','').matches('^[A-Za-z0-9]{2,3}[ -]?[0-9]{1,4}[A-Za-z]?$')
+        && data.get('origin',{}).get('code','').matches('^[A-Z]{3}$') && data.get('destination',{}).get('code','').matches('^[A-Z]{3}$')
+        && data.origin.code != data.destination.code
+        && data.get('departureTime','').matches('^([01][0-9]|2[0-3]):[0-5][0-9]( *[+]1)?$')
+        && data.get('arrivalTime','').matches('^([01][0-9]|2[0-3]):[0-5][0-9]( *[+]1)?$')
+        && data.get('startDate','').matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+        && data.get('aircraft','').size() > 0
+        && cabinNumbers(data)
+        && (data.get('scheduleVersion',1) != 2 || validScheduleV2(data))
+        && (validCabin(data,'economy') || validCabin(data,'business') || validCabin(data,'first'));
+    }
+    function validLeg(leg) {
+      return leg is map && leg.get('origin',{}).get('code','').matches('^[A-Z]{3}$')
+        && leg.get('destination',{}).get('code','').matches('^[A-Z]{3}$') && leg.origin.code != leg.destination.code
+        && leg.origin.get('timeZone','').size() > 0 && leg.destination.get('timeZone','').size() > 0
+        && leg.get('startDate','').matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$') && leg.get('endDate','') >= leg.startDate
+        && leg.get('endDate','').matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+        && leg.get('departureTime','').matches('^([01][0-9]|2[0-3]):[0-5][0-9]$') && leg.get('arrivalTime','').matches('^([01][0-9]|2[0-3]):[0-5][0-9]$')
+        && leg.get('arrivalDayOffset',null) is int && leg.arrivalDayOffset >= 0 && leg.arrivalDayOffset <= 2
+        && leg.get('operatingDays',[]) is list && leg.operatingDays.size() > 0 && leg.operatingDays.size() <= 7
+        && leg.operatingDays.hasOnly(['Mon','Tue','Wed','Thu','Fri','Sat','Sun']);
+    }
+    function validScheduleV2(data) {
+      return validLeg(data) && data.get('mandatoryFeesIncluded',false) == true && data.get('priceCurrency','') == 'USD'
+        && (data.get('fareBasis','one_way') == 'one_way' || (data.fareBasis == 'return' && validLeg(data.get('returnLeg',{}))
+          && data.returnLeg.origin.code == data.destination.code && data.returnLeg.destination.code == data.origin.code
+          && data.returnLeg.get('flightNo','').matches('^[A-Za-z0-9]{2,3}[ -]?[0-9]{1,4}[A-Za-z]?$')));
+    }
+    function validFlightPrice(data,item) {
+      let key = data.get('cabin','') == 'Economy' ? 'economy' : (data.get('cabin','') == 'Business' ? 'business' : 'first');
+      let adult = item.get('price',{}).get(key,0);
+      let policy = item.get('passengerFares',{}).get(key,{});
+      let child = policy.get('childPolicy','') == 'adult' ? adult : policy.get('childUSD',-1);
+      let infant = policy.get('infantUSD',-1);
+      let total = data.get('adults',0)*adult + data.get('children',0)*child + data.get('infants',0)*infant;
+      return data.get('quoteVersion',0) == 2 && data.get('cabin','') in ['Economy','Business','First Class']
+        && data.get('adults',0) is int && data.adults >= 1 && data.adults <= 20
+        && data.get('children',-1) is int && data.children >= 0 && data.children <= 20
+        && data.get('infants',-1) is int && data.infants >= 0 && data.infants <= data.adults
+        && (data.children == 0 || (child is number && child >= 0)) && (data.infants == 0 || (infant is number && infant >= 0))
+        && adult is number && adult > 0 && item.get('seats',{}).get(key,0) >= data.adults+data.children
+        && data.get('requestedPriceUSD',-1) is number && math.abs(data.requestedPriceUSD-total) <= 0.011
+        && data.get('dateMode','') == 'fixed' && data.get('departureDate','') >= item.startDate && data.departureDate <= item.endDate
+        && data.get('flightLeg','') in ['outbound','return','round_trip']
+        && (item.get('fareBasis','one_way') == 'return' ? data.flightLeg == 'round_trip' : data.flightLeg != 'round_trip');
+    }
+    function validOfferPrice(data,item) {
+      let rooms = item.get('serviceDetails',{}).get('rooms',[]);
+      let roomIndex = data.get('roomIndex',-1);
+      let room = roomIndex is int && roomIndex >= 0 && roomIndex < rooms.size() ? rooms[roomIndex] : {};
+      let unit = room.get('priceUSD',item.get('priceUSD',-1));
+      let quantity = data.get('quantity',0);
+      return unit is number && unit >= 0 && quantity is int && quantity > 0 && quantity <= 20000
+        && (data.kind != 'stay' || (data.get('rooms',0) is int && data.rooms > 0 && data.rooms <= item.get('totalRooms',0) && data.get('nights',0) is int && data.nights > 0 && data.nights <= 30
+          && quantity == data.rooms*data.nights && data.get('guests',0) <= data.rooms*room.get('capacity',item.get('maxGuests',1))
+          && (rooms.size() == 0 || room.get('id','') == data.get('roomId','') && data.get('roomId','') != '')))
+        && (data.kind == 'stay' || quantity == data.get('adults',0)+data.get('children',0))
+        && data.get('requestedPriceUSD',-1) is number && math.abs(data.requestedPriceUSD-unit*quantity) <= 0.011;
+    }
+    function validConvertedPrice(data) {
+      let rate = exists(/databases/$(database)/documents/referenceData/exchangeRates) ? get(/databases/$(database)/documents/referenceData/exchangeRates).data.get('rate',300) : 300;
+      return data.get('requestedPriceLKR',-1) is number && math.abs(data.requestedPriceLKR-data.requestedPriceUSD*rate) <= 0.021
+        && data.get('totalPrice',-1) == data.requestedPriceLKR && data.get('totalAmount',-1) == data.requestedPriceLKR;
+    }
+    function validCabin(data, cabin) { return data.get('price',{}).get(cabin,0) is number && data.price[cabin] > 0 && data.get('seats',{}).get(cabin,0) is int && data.seats[cabin] > 0; }
+    function draftNumber(data, key, integer) { let value=data.get(key,null); return value == null || (value is number && value >= 0 && (!integer || value is int)); }
+    function cabinNumbers(data) {
+      let price=data.get('price',{}); let seats=data.get('seats',{});
+      return price is map && seats is map
+        && draftNumber(price,'economy',false) && draftNumber(price,'business',false) && draftNumber(price,'first',false)
+        && draftNumber(seats,'economy',true) && draftNumber(seats,'business',true) && draftNumber(seats,'first',true);
+    }
+    function privateDraft(data) {
+      let coords=data.get('coordinates',{});
+      return data.get('catalogEligible', false) == false && realListing(data)
+        && data.get('images',[]) is list && data.get('images',[]).size() <= 8
+        && (data.keys().hasAny(['airlineId'])
+          ? (data.get('status','') != 'draft' || cabinNumbers(data))
+          : (draftNumber(data,'priceUSD',false) && draftNumber(data,'pricePerNight',false)
+            && draftNumber(data,'totalRooms',true) && draftNumber(data,'maxGuests',true) && draftNumber(data,'maxCapacityPerDay',true)
+            && (coords.get('latitude',null) == null || (coords.latitude is number && coords.latitude >= -90 && coords.latitude <= 90))
+            && (coords.get('longitude',null) == null || (coords.longitude is number && coords.longitude >= -180 && coords.longitude <= 180))));
+    }
     function validNotificationTime() {
       return !request.resource.data.keys().hasAny(['notificationUpdatedAt']) || request.resource.data.notificationUpdatedAt == request.time || (resource != null && request.resource.data.notificationUpdatedAt == resource.data.get('notificationUpdatedAt', null));
     }
@@ -93,15 +191,19 @@ service cloud.firestore {
       allow delete: if admin();
     }
     match /offers/{id} {
-      allow read: if admin() || ownPartner(resource.data) || resource.data.status == 'Published';
-      allow create: if admin() || (validNotificationTime() && ownPartner(request.resource.data) && partnerType('Tourism') && request.resource.data.status == 'Pending' && request.resource.data.verified == false);
-      allow update: if admin() || (resource.data.status != 'Published' && validNotificationTime() && ownPartner(resource.data) && request.resource.data.partnerId == resource.data.partnerId && request.resource.data.status == 'Pending' && request.resource.data.verified == false);
+      allow get: if signedIn() && partnerType('Tourism') && !exists(/databases/$(database)/documents/offers/$(id));
+      function checkedPublication() { let data = request.resource.data; return data.status != 'Published' || (realListing(data) && publicListing(data) && validOffer(data) && approvedProvider(data.partnerId, 'Tourism')); }
+      allow read: if admin() || ownPartner(resource.data) || (resource.data.status == 'Published' && publicListing(resource.data));
+      allow create: if (admin() && checkedPublication()) || (validNotificationTime() && ownPartner(request.resource.data) && partnerType('Tourism') && privateDraft(request.resource.data) && request.resource.data.status in ['Draft','Pending'] && (request.resource.data.status == 'Draft' || validOffer(request.resource.data)) && request.resource.data.verified == false);
+      allow update: if (admin() && checkedPublication()) || (resource.data.status != 'Published' && validNotificationTime() && ownPartner(resource.data) && partnerType('Tourism') && privateDraft(request.resource.data) && request.resource.data.partnerId == resource.data.partnerId && request.resource.data.status in ['Draft','Pending'] && (request.resource.data.status == 'Draft' || validOffer(request.resource.data)) && request.resource.data.verified == false);
       allow delete: if admin() || ownPartner(resource.data);
     }
     match /routes/{id} {
-      allow read: if admin() || ownAirline(resource.data) || resource.data.status == 'approved';
-      allow create: if admin() || (validNotificationTime() && ownAirline(request.resource.data) && partnerType('Airline') && request.resource.data.status == 'pending');
-      allow update: if admin() || (validNotificationTime() && ownAirline(resource.data) && request.resource.data.airlineId == resource.data.airlineId && ((!(resource.data.status in ['approved','paused']) && request.resource.data.status == 'pending') || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status','updatedAt','notificationUpdatedAt']) && resource.data.status == 'approved' && request.resource.data.status == 'paused')));
+      allow get: if signedIn() && partnerType('Airline') && !exists(/databases/$(database)/documents/routes/$(id));
+      function checkedPublication() { let data = request.resource.data; return data.status != 'approved' || (realListing(data) && publicListing(data) && validRoute(data) && approvedProvider(data.airlineId, 'Airline')); }
+      allow read: if admin() || ownAirline(resource.data) || (resource.data.status == 'approved' && publicListing(resource.data));
+      allow create: if (admin() && checkedPublication()) || (validNotificationTime() && ownAirline(request.resource.data) && partnerType('Airline') && privateDraft(request.resource.data) && request.resource.data.status in ['draft','pending'] && (request.resource.data.status == 'draft' || validRoute(request.resource.data)));
+      allow update: if (admin() && checkedPublication()) || (validNotificationTime() && ownAirline(resource.data) && partnerType('Airline') && request.resource.data.airlineId == resource.data.airlineId && ((!(resource.data.status in ['approved','paused']) && privateDraft(request.resource.data) && request.resource.data.status in ['draft','pending'] && (request.resource.data.status == 'draft' || validRoute(request.resource.data))) || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status','updatedAt','notificationUpdatedAt']) && resource.data.status == 'approved' && request.resource.data.status == 'paused')));
       allow delete: if admin() || ownAirline(resource.data);
     }
     match /listingRevisions/{id} {
@@ -112,10 +214,10 @@ service cloud.firestore {
           && data.targetCollection in ['offers','routes']
           && data.targetId is string && id == data.targetCollection + '_' + data.targetId
           && data.payload is map && data.baseVersion is string && data.submittedAt is string
-          && data.ownerId == request.auth.uid && data.status == 'Pending'
+          && data.ownerId == request.auth.uid && data.status in ['Draft','Pending'] && privateDraft(data.payload)
           && (data.targetCollection == 'offers'
-            ? ownPartner(target) && partnerType('Tourism') && data.payload.partnerId == target.partnerId && data.payload.status == 'Pending' && data.payload.verified == false
-            : ownAirline(target) && partnerType('Airline') && data.payload.airlineId == target.airlineId && data.payload.status == 'pending')
+            ? ownPartner(target) && partnerType('Tourism') && data.payload.partnerId == target.partnerId && data.payload.status in ['Draft','Pending'] && (data.status == 'Draft' || validOffer(data.payload)) && data.payload.verified == false
+            : ownAirline(target) && partnerType('Airline') && data.payload.airlineId == target.airlineId && data.payload.status in ['draft','pending'] && (data.status == 'Draft' || validRoute(data.payload)))
           && validNotificationTime();
       }
       allow read: if admin() || owner(resource.data.ownerId);
@@ -126,9 +228,10 @@ service cloud.firestore {
         && request.resource.data.targetCollection == resource.data.targetCollection);
       allow delete: if admin() || owner(resource.data.ownerId);
     }
-    match /destinations/{id} { allow read: if admin() || resource.data.status == 'Published'; allow write: if admin(); }
-    match /packages/{id} { allow read: if admin() || resource.data.status == 'Published'; allow write: if admin(); }
-    match /flights/{id} { allow read: if admin() || resource.data.status == 'Published'; allow write: if admin(); }
+    match /destinations/{id} { allow read: if admin() || (resource.data.status == 'Published' && publicListing(resource.data)); allow write: if admin(); }
+    // Legacy collections remain private. New inventory is reviewed in offers/routes.
+    match /packages/{id} { allow read, write: if admin(); }
+    match /flights/{id} { allow read, write: if admin(); }
     match /referenceData/{id} { allow read: if true; allow write: if admin(); }
     match /legacySamples/{id} { allow read, write: if admin(); }
 
@@ -137,12 +240,22 @@ service cloud.firestore {
       let bundle = data.kind == 'package';
       let itemId = flight ? data.routeId : data.offerId;
       let item = flight ? (exists(/databases/$(database)/documents/routes/$(itemId)) ? get(/databases/$(database)/documents/routes/$(itemId)).data : get(/databases/$(database)/documents/flights/$(itemId)).data) : (bundle ? (exists(/databases/$(database)/documents/packages/$(itemId)) ? get(/databases/$(database)/documents/packages/$(itemId)).data : get(/databases/$(database)/documents/offers/$(itemId)).data) : get(/databases/$(database)/documents/offers/$(itemId)).data);
-      return data.kind in ['flight','stay','tour','package'] && data.userId == request.auth.uid && data.status == 'Pending' && (flight ? !data.keys().hasAny(['partnerId']) : !data.keys().hasAny(['airlineId'])) && (item.status == 'Published' || (flight && item.status == 'approved')) && (flight ? data.airlineId == item.airlineId : data.partnerId == item.partnerId);
+      return data.kind in ['flight','stay','tour','package'] && publicListing(item) && realListing(item)
+        && approvedProvider(flight ? item.airlineId : item.partnerId, flight ? 'Airline' : 'Tourism')
+        && (flight && item.get('scheduleVersion',1) == 2 ? (validFlightPrice(data,item) && validConvertedPrice(data)) : (flight || (data.get('quoteVersion',0) == 2 && validOfferPrice(data,item) && validConvertedPrice(data))))
+        && data.userId == request.auth.uid && data.status == 'Pending' && (flight ? !data.keys().hasAny(['partnerId']) : !data.keys().hasAny(['airlineId'])) && (item.status == 'Published' || (flight && item.status == 'approved')) && (flight ? data.airlineId == item.airlineId : data.partnerId == item.partnerId);
+    }
+    function providerBookingTransition(before, after) {
+      let allowed = before.status == 'Pending' ? ['Confirmed','Rejected','Cancelled']
+        : before.status == 'Confirmed' ? ['Cancelled','Checked In','Checked-In','Completed']
+        : before.status in ['Checked In','Checked-In'] ? ['Completed','Cancelled'] : [];
+      return (ownPartner(before) || ownAirline(before)) && after.status in allowed
+        && (after.status == 'Cancelled' || approvedProvider(request.auth.uid, before.kind == 'flight' ? 'Airline' : 'Tourism'));
     }
     match /bookings/{id} {
       allow read: if admin() || (signedIn() && (resource.data.userId == request.auth.uid || ownPartner(resource.data) || ownAirline(resource.data)));
       allow create: if signedIn() && validNotificationTime() && validBooking(request.resource.data);
-      allow update: if admin() || (signedIn() && validNotificationTime() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status','updatedAt','notificationUpdatedAt']) && ((resource.data.userId == request.auth.uid && request.resource.data.status == 'Cancelled') || ((ownPartner(resource.data) || ownAirline(resource.data)) && resource.data.status != 'Cancelled' && request.resource.data.status in ['Confirmed','Rejected','Cancelled','Checked In','Checked-In','Completed'])));
+      allow update: if admin() || (signedIn() && validNotificationTime() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status','updatedAt','notificationUpdatedAt']) && ((resource.data.userId == request.auth.uid && resource.data.status in ['Pending','Confirmed'] && request.resource.data.status == 'Cancelled') || providerBookingTransition(resource.data, request.resource.data)));
       allow delete: if admin();
     }
     match /notificationRequests/{id} {

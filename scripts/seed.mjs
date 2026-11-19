@@ -8,6 +8,7 @@ const assets = JSON.parse(await fs.readFile(path.join(base, 'seed/assets.json'),
 const apply = process.argv.includes('--apply');
 console.log(JSON.stringify({ apply, project: process.env.GOOGLE_CLOUD_PROJECT || '(unset)', collections: Object.fromEntries(Object.entries(data).map(([k,v])=>[k,v.length])), assets: Object.keys(assets).length }, null, 2));
 if (!apply) process.exit(0);
+if (!process.env.FIRESTORE_EMULATOR_HOST) throw new Error('Sample inventory may only be seeded into the local Firestore emulator.');
 const projectId = process.env.GOOGLE_CLOUD_PROJECT;
 if (!projectId) throw new Error('Set GOOGLE_CLOUD_PROJECT explicitly. Preview makes no network calls.');
 const { initializeApp, applicationDefault } = await import('firebase-admin/app');

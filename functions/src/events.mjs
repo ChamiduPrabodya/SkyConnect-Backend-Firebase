@@ -6,6 +6,7 @@ const clean = text => String(text || '').replace(/[\r\n]/g, ' ').slice(0, 100);
 // Recipients and message text are derived here, never supplied by mobile clients.
 export function statusNotifications(collection, id, current, previous, adminUids = []) {
   if (current.isSample || current.isDemo || current.status === previous?.status || !current.status) return [];
+  if (['offers','routes'].includes(collection) && current.status.toLowerCase() === 'draft') return [];
   const status = clean(current.status), name = clean(current.title || current.name || current.flightNo || 'your listing');
   const result = [];
   const add = (uid, app, title, body, category) => {

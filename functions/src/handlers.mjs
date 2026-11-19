@@ -22,6 +22,7 @@ export function createHandlers({ db, account, send, adminUids = () => [],
     if (!after?.exists || !await active()) return { skipped: 'inactive-or-deleted' };
     const value = after.data(), previous = before?.exists ? before.data() : null;
     if (value.isSample || value.isDemo) return { skipped: 'sample' };
+    if (['offers','routes'].includes(collection) && value.status?.toLowerCase() === 'draft') return { skipped: 'private-draft' };
     if (!created && value.status === previous?.status) return { skipped: 'unchanged-status' };
     const pending = collection === 'offers' ? 'Pending' : collection === 'routes' ? 'pending' : null;
     const normalize = created && pending && (value.status !== pending || (collection === 'offers' && value.verified !== false));
