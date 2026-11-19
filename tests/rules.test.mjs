@@ -25,6 +25,14 @@ beforeEach(async () => {
 });
 const stayQuote={quoteVersion:2,roomIndex:-1,roomId:'',rooms:1,nights:1,quantity:1,guests:2,requestedPriceUSD:80,requestedPriceLKR:24000,totalPrice:24000,totalAmount:24000};
 const ruleTest = (name, fn) => test(name, { skip: !enabled }, fn);
+ruleTest('anonymous Skylo identity reads public listings but cannot save plans, profiles or booking requests',async()=>{
+ const db=env.authenticatedContext('guest',{firebase:{sign_in_provider:'anonymous'}}).firestore();
+ await assertSucceeds(getDoc(doc(db,'offers','hotel')));
+ await assertSucceeds(getDoc(doc(db,'routes','flight')));
+ await assertFails(setDoc(doc(db,'users','guest','savedPlans','trip'),{route:['galle']}));
+ await assertFails(setDoc(doc(db,'users','guest'),{uid:'guest',role:'traveler'}));
+ await assertFails(setDoc(doc(db,'bookings','guest-request'),{...stayQuote,userId:'guest',kind:'stay',offerId:'hotel',partnerId:'hotel-owner',status:'Pending'}));
+});
 const scheduledRoute={...validRoute,scheduleVersion:2,origin:{code:'LHR',timeZone:'Europe/London'},destination:{code:'CMB',timeZone:'Asia/Colombo'},endDate:'2027-12-31',operatingDays:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],arrivalDayOffset:0,mandatoryFeesIncluded:true,priceCurrency:'USD',fareBasis:'one_way',passengerFares:{economy:{childPolicy:'custom',childUSD:50,infantUSD:10}}};
 ruleTest('partner submission to admin publication to traveler request to owner confirmation keeps prices and ownership',async()=>{
  const airline=env.authenticatedContext('airline-owner').firestore(),admin=env.authenticatedContext('admin',{admin:true}).firestore(),traveler=env.authenticatedContext('traveler').firestore(),stranger=env.authenticatedContext('other').firestore();

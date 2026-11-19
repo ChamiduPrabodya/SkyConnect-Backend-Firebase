@@ -60,6 +60,9 @@ export function createHandlers({ db, account, send, adminUids = () => [],
   }
 
   async function provision(user) {
+    // Anonymous planning is not traveler registration. Linking credentials later
+    // is completed by the registration transaction in the traveler app.
+    if (!user?.email && !user?.phoneNumber && !user?.providerData?.length) return { skipped: 'guest-session' };
     if (!validUid(user?.uid) || !await active()) return { skipped: 'inactive-or-invalid' };
     if (!await account(user.uid)) return { skipped: 'missing-or-disabled-account' };
     const profile = db.doc(`users/${user.uid}`), preferences = db.doc(`users/${user.uid}/settings/preferences`);

@@ -2,7 +2,9 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     function deleting(uid) { return exists(/databases/$(database)/documents/accountDeletionRequests/$(uid)); }
-    function signedIn() { return request.auth != null && !deleting(request.auth.uid); }
+    function registered() { return request.auth != null
+      && request.auth.token.get('firebase', {}).get('sign_in_provider', '') != 'anonymous'; }
+    function signedIn() { return registered() && !deleting(request.auth.uid); }
     function admin() { return signedIn() && request.auth.token.get('admin', false) == true; }
     function owner(uid) { return signedIn() && request.auth.uid == uid; }
     function ownPartner(data) { return signedIn() && data.get('partnerId', '') == request.auth.uid; }
@@ -133,8 +135,8 @@ service cloud.firestore {
         && request.resource.data.pdpaConsent == getAfter(/databases/$(database)/documents/users/$(uid)/consents/$(recordId)).data;
     }
     match /accountDeletionRequests/{uid} {
-      allow read: if request.auth != null && request.auth.uid == uid;
-      allow create: if request.auth != null && request.auth.uid == uid
+      allow read: if registered() && request.auth.uid == uid;
+      allow create: if registered() && request.auth.uid == uid
         && request.resource.data.keys().hasOnly(['uid','status','requestedAt','authTime'])
         && request.resource.data.uid == uid && request.resource.data.status == 'pending'
         && request.resource.data.requestedAt == request.time

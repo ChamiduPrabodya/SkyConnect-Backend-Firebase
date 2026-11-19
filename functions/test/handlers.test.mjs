@@ -137,6 +137,12 @@ integration('Auth provisioning creates defaults once and preserves profile, pref
   assert.equal((await db.doc('users/traveler/settings/notifications').get()).get('traveler'), true);
 });
 
+integration('anonymous Skylo sessions do not create traveler profiles or notification settings', async () => {
+  assert.deepEqual(await handlers.provision({uid:'traveler',providerData:[]}),{skipped:'guest-session'});
+  assert.equal((await db.doc('users/traveler').get()).exists,false);
+  assert.equal((await db.doc('users/traveler/settings/notifications').get()).exists,false);
+});
+
 integration('Auth provisioning preserves a profile created first by the traveler frontend', async () => {
   await db.doc('users/traveler').set({ uid: 'traveler', name: 'Entered name', phone: '123', role: 'traveler' });
   await handlers.provision({ uid: 'traveler', email: 'test@example.com' });
